@@ -1,0 +1,91 @@
+\documentclass[pageno]{jpaper}
+
+\newcommand{\IWreport}{Spring 2019}
+\newcommand{\quotes}[1]{``#1''}
+
+
+\widowpenalty=9999
+
+\usepackage[normalem]{ulem}
+
+\begin{document}
+
+\title{Measuring Musical Sampling Impact Through Network Analysis}
+
+\author{Justin Tran\\Adviser: Andrea LaPaugh}
+
+\date{}
+\maketitle
+
+\thispagestyle{empty}
+\doublespacing
+\begin{abstract}
+This document is intended to serve as a sample you can use for independent work reports.  We provide some guidelines on content and formatting.  They are not required, but they might be helpful.
+\end{abstract}
+
+\section{Introduction}
+
+\section{Motivation and Goal}
+
+\section{Problem Background}
+
+\section{Related Work}
+\subsection{Musical Sampling Influence Networks using WhoSampled}
+In past works, research has been performed on basic network analysis of sampled music that is grouped into genres at the very least. This is seen in
+a paper by Bryan and Wang from Stanford University’s Department of Music. The paper utilized the WhoSampled.com dataset to analyze musical influence and rank artists, songs, and genres based on their level of “sampling influence” throughout history then proceeded to rank the categories based on their amount of sampling analyzed via clustering and node degree. Overall, network analysis was used to indicate the relative flow of samples between genres. However, no intra-genre analysis was included which limited the potential findings that this dataset gives access to. The paper noted the complex nature of using network analysis to define "influence" in music but settled on using degree centrality as a sole measure of influence. They came to the conclusion that a unique power-law degree distribution is followed in the musical sampling world: Funk, soul, and disco music are heavily sampled by hip-hop, R\&B, and electronic music when compared to the other genres that are sampled. A heavy focus was put on hip-hop, R\&B, and electronic music as well while generally leaving the other sampling genres unanalyzed as the data for other genres was less rich. The paper also noticeably omits any analysis on any properties of the sampled or sampling music such as harmonics or audio elements. \cite{Bryan}
+
+Additional research by Stanford researchers Alban, Choksi, and Tsai attempted to investigate music sampling based on harmonic and timbral features such as dominant chords and qualitative emotional response. It was a direct attempt to extend upon the work done by Bryan and Wang by placing a greater focus on features of the sampled works that are noticeable (but sometimes very subtle) to individuals with a deep background in music theory. The researchers identified the music by specific harmonic and timbral features rendered by the piece. Examples of "harmonic features" include "changes involving minor/major 7th chords" and "natural minor key changes". "Timbral features" include "calm, quiet, mellow". The focus of their research varies from this paper as the authors mainly attempted to draw associations between the presence of harmonic and timbral features and their ability to make a song more likely to be sampled to form a ranking of top features. In addition, our paper does not touch on harmonic features because music theory would require additional knowledge that is not the focus of our "influence". Timbral features are not included in our paper either due to the need for granular data tagging that would be required in our dataset which was not provided by WhoSampled. Neither of the papers touched on the quantitative popularity of sampling over time much less the specific sampling techniques used over a set number of decades. This paper's focus was clearly a far departure from the general sense of "influence" described by Bryan and Wang as this maps influence to preferential attachment in the network graph. Each edge was scored using a product of the degrees of each node to denote influence whereas our influence metrics include multiple types of centrality and degree measures rather than choosing a single model for influence. \cite{Alban}
+
+Brandford performed a unique solo analysis of sampling done by Kanye West and applied many analysis strategies that our paper also applies. One of these unique areas of analysis is time period. Brandford sorted the songs Kanye West sampled into the decades they were created in and found that a disproportionate number of samples came from 1970's tracks. It is important to note that West's samples encompassed every decade back to the 1950's. Simpler data analysis that the previous two pieces of research employed were also used by Brandford. Basic statistics on the number of samples Kanye West has used and the number of artists these samples came from were cited to ensure the reader that researching Kanye West alone could provide a rich dataset. No analysis on genres was mentioned. It was clear that the focus of analysis was more limited in this investigation as most of the analysis was placed on time period and pure numbers of occurences rather than forming a network (which, to Brandford's defense, would be quite limited for a single artist). Our paper does borrow the idea of investigating time period from Brandford's investigation as it provides a better understanding of the types of music that sampling producers find an interest in when sampling music. \cite{Brandford}
+\subsection{Alternative Measures of Influence in Music Networks}
+Watson uses social network analyses from an economic and sociological perspective to pinpoint the connectedness of music networks between large metropolitan areas by analyzing their connectedness with music sampling. Note that this paper focuses on networks by looking at geographical areas as the nodes whereas all previous research mentioned uses a piece of music as a node. However, a link between nodes is still created by a sample usage. Network graphs were created where each node represented a metropolitan area and their number of links in the graph (amount of influence over the music industry as a whole) increases as more albums sample a song distinctly produced in their city. Nodes with greater degrees indicate more central metropolitan areas with a greater influence in the music sampling network. This research applies the same principles we saw in Bryan and Wang's work but applies it to geographical areas and looks at these areas as the creators of musical influence rather than individual artists or genres. This is a large assumption that deviates from the popular belief that the reason a piece of music is sampled is due to the genre or artistic style provided by the track. Instead, the work believes that the unique characteristics of an area's musical community finds its way into its artists work and makes it more appealing to certain producers for sampling. Our paper deviates from this belief and analyzes influence through the traditional view of artists or genres as the creators of unique audio characteristics that make them more appealing for sampling.
+\cite{Watson}
+
+A unique usage of networks was analyzed by Youngblood to analyze cultural transmission modes of music sampling in the modern era with the rise of the Internet. Though the paper approaches the topic from a sociological perspective, there continues to be a focus on how sampling and how influence is spread across a network (i.e. how an artist or song becomes popular to sample). Youngblood specifically looks at the transmission of specific drum breaks through musical sampling in two different environments: Traditional cultural collaboration networks and online community networks with access to the collective knowledge of all members. The research looks at data through only three of the most (allegedly) popular sampled drum beats of all time and proceeds to analyze whether the music was sampled through a cultural collaboration network by noting time and distance. Based on the year the sample was made and the geographical location of the sampling song's production studio, they attempted to classify which of the two environments this sampling was inspired by. Results found that sampling is less influenced by geographical location and prior collaboration between artists due to the rise of internet networks. The author claims this has led to an increase in social interactions between artists and therefore sampling in general in the modern era. Like Watson's work, this use of networks is very different from ours but it provides an alternative way to look at how influence can be derived from a song's sampling usage.
+\cite{Youngblood}
+
+Rather than looking at influence through sampling, one can also look at influence through the number of collaborations they have with other musicians. Zinoviev specifically analyzes the success of musical groups as a function of the amount of collaboration between them and other musical groups as represented in a social network. He hypothesizes that groups with greater public popularity benefit the most from cultual cross-pollination caused by performers moving between working on different projects and collaborating with a variety of artists. The findings suggest that average neighbors' degree affects the success of a musical group node in a graph indirectly. There was no concrete finding about what measures of centrality in a collaborating network told the most about the success of a musical group but did conclude that analyzing nodes with a generally higher centrality across multiple measures generally acted as a better predictor of a success than simply by chance. 
+\cite{Zinoviev}
+
+\section{Approach}
+\begin{itemize}
+\item Key novel idea
+\item Why it is a good idea
+\end{itemize}
+
+\section{Implementation}
+\begin{itemize}
+\item System overview (flow chart of key steps?)
+\item Subsection for each step or issue you addressed
+\begin{itemize}
+\item Problem statement
+\item Possible approaches
+\item Chosen approach and why
+\item Implementaton details
+\end{itemize}
+\end{itemize}
+
+\section{Results and Analysis}
+\begin{itemize}
+\item Experiment design...
+\item Data...
+\item Metrics...
+\item Comparisons...
+\item Qualitative results...
+\item Quantitative results...
+\end{itemize}
+
+\section{Conclusions}
+\begin{itemize}
+\item Conclusions...
+\item Limitations...
+\item Future work...
+\end{itemize}
+
+\section{Future Work}
+\nocite{*}
+\bstctlcite{bstctl:etal, bstctl:nodash, bstctl:simpurl}
+\bibliographystyle{IEEEtranS}
+\bibliography{references}
+
+\end{document}

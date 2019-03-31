@@ -1,0 +1,7 @@
+Makefile - used to create bibtex and PDF
+- make clean
+- make all
+
+template.tex - latex source
+
+references.bib - bibtex file - where your references go
