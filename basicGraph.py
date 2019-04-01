@@ -77,29 +77,29 @@ for node in diG.nodes:
 	most_sampled[node] = diG.in_degree(node)
 	most_samples[node] = diG.out_degree(node)
 
-# # Print number of times sampled
-# # print(sorted(most_sampled.items(), key=lambda sample: sample[1]))
-# # Print number of times sampling something
-# # print(sorted(most_samples.items(), key=lambda sample: sample[1]))
-# # Print associated genre
-# # print(networkx.get_node_attributes(diG, 'genre'))
+# Print number of times sampled
+# print(sorted(most_sampled.items(), key=lambda sample: sample[1]))
+# Print number of times sampling something
+# print(sorted(most_samples.items(), key=lambda sample: sample[1]))
+# Print associated genre
+# print(networkx.get_node_attributes(diG, 'genre'))
 
-# Top 10 sampled and top 10 samplers
-top_10_sampled = sorted(most_sampled.items(), key=lambda sample: sample[1])[-10:]
-top_10_sampling = sorted(most_samples.items(), key=lambda sample: sample[1])[-10:]
-	# Most sampled artists: ('Beside', 203), ('Lyn Collins', 233), ('Public Enemy', 258), ('The Winstons', 272), ('James Brown', 599)
-	# Most sampling artists: ('J Dilla', 65), ('Lil B', 65), ('DJ Shadow', 77), ('Madlib', 88), ('Girl Talk', 99)
-fig, ax = plt.subplots()
-plt.xticks(rotation=25)
-plt.title('Most Sampling Artists by Count')
-plt.ylabel('Count')
-plt.xlabel('Sampling Artist')
-plt.gcf().subplots_adjust(bottom=0.15)
-# Separate tuple of top artists for graphing
-top_10_artists, top_10_artists_counts = zip(*top_10_sampling)
-for i, v in enumerate(top_10_sampling):
-	ax.text(i - .15, v[1], str(v[1]))
-plt.bar(x=top_10_artists, height=top_10_artists_counts)
+# # Top 10 sampled and top 10 samplers
+# top_10_sampled = sorted(most_sampled.items(), key=lambda sample: sample[1])[-10:]
+# top_10_sampling = sorted(most_samples.items(), key=lambda sample: sample[1])[-10:]
+# 	# Most sampled artists: ('Beside', 203), ('Lyn Collins', 233), ('Public Enemy', 258), ('The Winstons', 272), ('James Brown', 599)
+# 	# Most sampling artists: ('J Dilla', 65), ('Lil B', 65), ('DJ Shadow', 77), ('Madlib', 88), ('Girl Talk', 99)
+# fig, ax = plt.subplots()
+# plt.xticks(rotation=25)
+# plt.title('Most Sampling Artists by Count')
+# plt.ylabel('Count')
+# plt.xlabel('Sampling Artist')
+# plt.gcf().subplots_adjust(bottom=0.15)
+# # Separate tuple of top artists for graphing
+# top_10_artists, top_10_artists_counts = zip(*top_10_sampling)
+# for i, v in enumerate(top_10_sampling):
+# 	ax.text(i - .15, v[1], str(v[1]))
+# plt.bar(x=top_10_artists, height=top_10_artists_counts)
 
 # # Get all intragenre and intergenre samples
 # intraGenre = []
