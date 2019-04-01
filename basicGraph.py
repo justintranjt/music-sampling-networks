@@ -1,10 +1,15 @@
 import csv
 import networkx
 import matplotlib.pyplot as plt
+import matplotlib
 import collections
 
+# Set font sizes of plots
+font = {'family': 'normal', 'size': 6}
+matplotlib.rc('font', **font)
+
 # Parse through spreadsheet data
-with open('whosampled50.csv', mode='r', encoding="cp850") as dataSamples:
+with open('whosampled30k.csv', mode='r', encoding="cp850") as dataSamples:
 	dataSamples = csv.reader(dataSamples)
 	# Read out header with row
 	header = next(dataSamples)
@@ -19,17 +24,35 @@ uniqueSamplees = list(set([row[4] for row in rowData]))
 # Count the number of songs in each genre
 uniqueGenreCountsSamplers = list(row[2] for row in rowData)
 uniqueGenreCountsSamplees = list(row[6] for row in rowData)
-counter = collections.Counter(uniqueGenreCountsSamplers)
-# print('Unique Sampler Genres: ' + str(counter))
-counter = collections.Counter(uniqueGenreCountsSamplees)
-# print('Unique Samplee Genres: ' + str(counter))
+samplerCounter = collections.Counter(uniqueGenreCountsSamplers)
+print('Unique Sampler Genres: ' + str(samplerCounter))
+sampleeCounter = collections.Counter(uniqueGenreCountsSamplees)
+print('Unique Samplee Genres: ' + str(sampleeCounter))
+# Display bar graph of sampled genres and sampling genres
+fig, ax = plt.subplots()
+for i, v in enumerate(samplerCounter.values()):
+	ax.text(i - .38, v, '{0:.2f}%'.format((v / 29667) * 100))
+plt.xticks(rotation=32)
+plt.title('Most Sampling Genres by Percentage')
+plt.ylabel('Percentage')
+plt.xlabel('Genre')
+plt.bar(*zip(*samplerCounter.items()))
+# plt.bar(*zip(*sampleeCounter.items()))
+frame1 = plt.gca()
+plt.gcf().subplots_adjust(bottom=0.15)
+frame1.axes.yaxis.set_ticklabels([])
 
-# creates a list of tuples with unique ids and their names for each artist
-idSampler = list(enumerate(uniqueSamplers))
-idSamplee = list(enumerate(uniqueSamplees))
-# creates a dictionary(hash map) that maps each id to the artist names
-keysSampler = {name: i for i, name in enumerate(uniqueSamplers)}
-keysSamplee = {name: i for i, name in enumerate(uniqueSamplees)}
+	# Hip-hop is the genre that samples the most often overall
+	# Hip-hop is the 2nd-most sampled while Soul/Funk/Disco is the most sampled overall
+	# What are the percentages?
+	# 64.10% of the samplers are hip-hop, 31.98% of the sampled are Soul/Funk/Disco, 28.58% of sampled are hip hop
+
+# # creates a list of tuples with unique ids and their names for each artist
+# idSampler = list(enumerate(uniqueSamplers))
+# idSamplee = list(enumerate(uniqueSamplees))
+# # creates a dictionary(hash map) that maps each id to the artist names
+# keysSampler = {name: i for i, name in enumerate(uniqueSamplers)}
+# keysSamplee = {name: i for i, name in enumerate(uniqueSamplees)}
 
 # Links is a list quintles 
 # links = (samplingArtist, sampledArtist, elemSampled, samplingGenre, sampledGenre)
@@ -44,69 +67,70 @@ for row in rowData:
 # print(links)
 # print(len(links))
 
-# Create digraph
+# # Create digraph
 g = networkx.Graph()
 diG = networkx.DiGraph(g, dataset="5000")
 # Add nodes with genre attribute
 for node in links:
 	diG.add_node(node[0], genre=node[3])  # Sampling node
 	diG.add_node(node[1], genre=node[4])  # Sampled node
-# Put nodes in dictionary organized by {genre: artist}
-byGenreNodes = collections.defaultdict(list)
-for artist, genre in networkx.get_node_attributes(diG, 'genre').items():
-	byGenreNodes[genre].append(artist)
-# print(byGenreNodes)
+# # Put nodes in dictionary organized by {genre: artist}
+# byGenreNodes = collections.defaultdict(list)
+# for artist, genre in networkx.get_node_attributes(diG, 'genre').items():
+# 	byGenreNodes[genre].append(artist)
+# # print(byGenreNodes)
 
-# Create links and nodes, note that networkX needs links in tuples
-for node in links: # Change each link and changes to tuple so it can be added
-	diG.add_edge(u_of_edge=node[0], v_of_edge=node[1], audioElem=node[2])
+# # Create links and nodes, note that networkX needs links in tuples
+# for node in links: # Change each link and changes to tuple so it can be added
+# 	diG.add_edge(u_of_edge=node[0], v_of_edge=node[1], audioElem=node[2])
 
-# List of artists by number of times sampled
-most_sampled = {}
-# List of artists by number of times they used a sample
-most_samples = {}
-# Get degrees of each node
-for node in diG.nodes:
-	most_sampled[node] = diG.in_degree(node)
-	most_samples[node] = diG.out_degree(node)
+# # List of artists by number of times sampled
+# most_sampled = {}
+# # List of artists by number of times they used a sample
+# most_samples = {}
+# # Get degrees of each node
+# for node in diG.nodes:
+# 	most_sampled[node] = diG.in_degree(node)
+# 	most_samples[node] = diG.out_degree(node)
 
-# Print number of times sampled
-# print(sorted(most_sampled.items(), key=lambda sample: sample[1]))
-# Print number of times sampling something
-# print(sorted(most_samples.items(), key=lambda sample: sample[1]))
-# Print associated genre
-# print(networkx.get_node_attributes(diG, 'genre'))
+# # Print number of times sampled
+# # print(sorted(most_sampled.items(), key=lambda sample: sample[1]))
+# # Print number of times sampling something
+# # print(sorted(most_samples.items(), key=lambda sample: sample[1]))
+# # Print associated genre
+# # print(networkx.get_node_attributes(diG, 'genre'))
 
-# Get all intragenre and intergenre samples
-intraGenre = []
-interGenre = []
-for edge in diG.edges():
-	# Print edge if it samples somebody in the same genre
-	if diG.nodes()[edge[0]] == diG.nodes()[edge[1]]:
-		intraGenre.append(edge)
-	# Print edge if it samples somebody in another genre
-	else:
-		interGenre.append(edge)
-# print(intraGenre)
-# print(interGenre)
+# # Get all intragenre and intergenre samples
+# intraGenre = []
+# interGenre = []
+# for edge in diG.edges():
+# 	# Print edge if it samples somebody in the same genre
+# 	if diG.nodes()[edge[0]] == diG.nodes()[edge[1]]:
+# 		intraGenre.append(edge)
+# 	# Print edge if it samples somebody in another genre
+# 	else:
+# 		interGenre.append(edge)
+# # print(intraGenre)
+# # print(interGenre)
 
-# Degree centrality
-centrality = sorted(networkx.degree_centrality(diG).items(),
-	key=lambda degCent: degCent[1])
-# print(centrality)
-# Betweenness centrality
-betweenness = sorted(networkx.betweenness_centrality(diG).items(),
-	key=lambda begCent: begCent[1])
-# print(betweenness)
+# # Degree centrality
+# centrality = sorted(networkx.degree_centrality(diG).items(),
+# 	key=lambda degCent: degCent[1])
+# # print(centrality)
+# # Betweenness centrality
+# betweenness = sorted(networkx.betweenness_centrality(diG).items(),
+# 	key=lambda begCent: begCent[1])
+# # print(betweenness)
 
-# Display graph
-layout = networkx.shell_layout(diG)
-# Create edge labels
-edge_labels = networkx.get_edge_attributes(diG, 'audioElem')
-networkx.draw_networkx_edge_labels(diG, layout, edge_labels, font_size=8)
-# Create color map by genre by mapping respective genres to ints
-color_map_genre = [hash(genre) for genre in networkx.get_node_attributes(diG, 'genre').values()]
+# # Display graph
+# layout = networkx.shell_layout(diG)
+# # Create edge labels
+# edge_labels = networkx.get_edge_attributes(diG, 'audioElem')
+# networkx.draw_networkx_edge_labels(diG, layout, edge_labels, font_size=8)
+# # Create color map by genre by mapping respective genres to ints
+# color_map_genre = [hash(genre) for genre in networkx.get_node_attributes(diG, 'genre').values()]
 # print(color_map_genre)
-networkx.draw(diG, layout, with_labels=True, cmap=plt.cm.RdYlBu, node_color=color_map_genre, 
-	node_size=[v * 100 for v in most_sampled.values()], font_size=8)
-plt.show(diG)
+# networkx.draw(diG, layout, with_labels=True, cmap=plt.cm.RdYlBu, node_color=color_map_genre, 
+# 	node_size=[v * 100 for v in most_sampled.values()], font_size=8)
+# plt.show(diG)
+plt.savefig('topSamplingGenresPercent.png')
