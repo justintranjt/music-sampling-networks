@@ -135,7 +135,6 @@ for artist in original_hub_nodes:
 			hub_ego.add_node(link[1], genre=link[4])
 			hub_ego.add_edge(u_of_edge=artist, v_of_edge=link[1])
 
-
 # All samplers in ego hub network
 largest_hub_samplers = [hub_sampler[0] for hub_sampler in networkx.edges(hub_ego)]
 pos = networkx.spring_layout(hub_ego)
