@@ -5,7 +5,7 @@ import matplotlib
 import collections
 
 # Set font sizes of plots
-font = {'family': 'normal', 'size': 6}
+font = {'family': 'normal', 'size': 5}
 matplotlib.rc('font', **font)
 
 # Parse through spreadsheet data
@@ -44,10 +44,10 @@ with open('whosampled30k.csv', mode='r', encoding="cp850") as dataSamples:
 	# 64.10% of the samplers are hip-hop, 31.98% of the sampled are Soul/Funk/Disco, 28.58% of sampled are hip hop
 
 # Links is a list quintles 
-# links = (samplingArtist, sampledArtist, elemSampled, samplingGenre, sampledGenre)
+# links = (samplingArtist, sampledArtist, elemSampled, samplingGenre, sampledGenre, sampledSong)
 links = []
 for row in rowData:
-	links.append((row[0], row[4], row[9], row[2], row[6]))
+	links.append((row[0], row[4], row[9], row[2], row[6], row[5]))
 # print(links)
 # print(len(links))
 
@@ -66,7 +66,27 @@ for artist, genre in networkx.get_node_attributes(diG, 'genre').items():
 
 # Create links and nodes, note that networkX needs links in tuples
 for node in links: # Change each link and changes to tuple so it can be added
-	diG.add_edge(u_of_edge=node[0], v_of_edge=node[1], audioElem=node[2])
+	diG.add_edge(u_of_edge=node[0], v_of_edge=node[1], audioElem=node[2], song=node[5])
+
+# List of tracks by number of times sampled
+sampled_tracks = collections.defaultdict(int)
+for sampledSong in networkx.get_edge_attributes(diG, 'song').values():
+	sampled_tracks[sampledSong] += 1
+most_sampled_tracks = sorted(sampled_tracks.items(), key=lambda track: track[1])
+# Graph of tracks by number of times sampled
+top_10_sampled_tracks = most_sampled_tracks[-10:]
+fig, ax = plt.subplots()
+plt.xticks(rotation=33)
+plt.title('Most Sampled Track by Count')
+plt.ylabel('Count')
+plt.xlabel('Sampled Track')
+plt.gcf().subplots_adjust(bottom=0.2)
+# Separate tuple of top artists for graphing
+top_10_tracks, top_10_tracks_counts = zip(*top_10_sampled_tracks)
+for i, v in enumerate(top_10_sampled_tracks):
+	ax.text(i - .15, v[1], str(v[1]))
+plt.bar(x=top_10_tracks, height=top_10_tracks_counts)
+
 
 # List of artists by number of times sampled
 most_sampled = {}
@@ -84,7 +104,7 @@ for node in diG.nodes:
 # Print associated genre
 # print(networkx.get_node_attributes(diG, 'genre'))
 
-# # Top 10 sampled and top 10 samplers
+# # Top 10 sampled artists and top 10 sampling artists
 # top_10_sampled = sorted(most_sampled.items(), key=lambda sample: sample[1])[-10:]
 # top_10_sampling = sorted(most_samples.items(), key=lambda sample: sample[1])[-10:]
 # 	# Most sampled artists: ('Beside', 203), ('Lyn Collins', 233), ('Public Enemy', 258), ('The Winstons', 272), ('James Brown', 599)
@@ -132,4 +152,4 @@ for node in diG.nodes:
 # color_map_genre = [hash(genre) for genre in networkx.get_node_attributes(diG, 'genre').values()]
 # networkx.draw(diG, layout, with_labels=True, cmap=plt.cm.RdYlBu, node_color=color_map_genre, 
 # 	node_size=[v * 100 for v in most_sampled.values()], font_size=8)
-plt.savefig('topSamplingArtistsCount.png')
+plt.savefig('topSampledTracks.png', dpi=199)
