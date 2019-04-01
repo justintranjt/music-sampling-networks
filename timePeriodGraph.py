@@ -13,13 +13,43 @@ with open('whosampled30k.csv', mode='r', encoding="cp850") as dataSamples:
 	dataSamples = csv.reader(dataSamples)
 	# Read out header with row
 	header = next(dataSamples)
-	rowData = [row for row in dataSamples if int(row[7]) >= 1990 and int(row[7]) <= 1999]
+	# rowData = [row for row in dataSamples if int(row[7]) >= 1990 and int(row[7]) <= 1999]
+	rowData = [row for row in dataSamples]
 
-# # Get all unique artists so we have 1:1 between IDs and artists
+# Top sampled time periods
+fig, ax = plt.subplots()
+sampled_by_period = collections.defaultdict(int)
+for row in rowData:
+	sampled_by_period[row[7]] += 1
+sorted_sampled_by_period = sorted(sampled_by_period.items())
+del sorted_sampled_by_period[0]
+plt.scatter(*zip(*sorted_sampled_by_period), c='r', s=3)
+plt.plot(*zip(*sorted_sampled_by_period))
+plt.xticks(rotation=90)
+ax.set_xticks(ax.get_xticks()[::2])
+plt.title('Count of Sampled Tracks by Time Period')
+plt.xlabel('Year')
+plt.ylabel('Count')
+# Top sampling time periods
+sampling_by_period = collections.defaultdict(int)
+for row in rowData:
+	sampling_by_period[row[3]] += 1
+sorted_sampling_by_period = sorted(sampling_by_period.items())
+del sorted_sampling_by_period[0]
+del sorted_sampling_by_period[-1]
+plt.scatter(*zip(*sorted_sampling_by_period), c='r', s=3)
+plt.plot(*zip(*sorted_sampling_by_period))
+plt.xticks(rotation=90)
+ax.set_xticks(ax.get_xticks()[::2])
+plt.title('Count of Sampling Tracks by Time Period')
+plt.xlabel('Year')
+plt.ylabel('Count')
+
+# Get all unique artists so we have 1:1 between IDs and artists
 # uniqueSamplers = list(set([row[0] for row in rowData]))
 # uniqueSamplees = list(set([row[4] for row in rowData]))
-# # print('Unique Samplers: ' + str(len(uniqueSamplers)))
-# # print('Unique Samplees: ' + str(len(uniqueSamplees)))
+# print('Unique Samplers: ' + str(len(uniqueSamplers)))
+# print('Unique Samplees: ' + str(len(uniqueSamplees)))
 
 # # Count the number of songs in each genre
 # uniqueGenreCountsSamplers = list(row[2] for row in rowData)
@@ -44,10 +74,10 @@ with open('whosampled30k.csv', mode='r', encoding="cp850") as dataSamples:
 	# 64.10% of the samplers are hip-hop, 31.98% of the sampled are Soul/Funk/Disco, 28.58% of sampled are hip hop
 
 # Links is a list quintles 
-# links = (samplingArtist, sampledArtist, elemSampled, samplingGenre, sampledGenre)
+# links = (samplingArtist, sampledArtist, elemSampled, samplingGenre, sampledGenre, sampledSong)
 links = []
 for row in rowData:
-	links.append((row[0], row[4], row[9], row[2], row[6]))
+	links.append((row[0], row[4], row[9], row[2], row[6], row[5]))
 # print(links)
 # print(len(links))
 
@@ -66,16 +96,37 @@ for artist, genre in networkx.get_node_attributes(diG, 'genre').items():
 
 # Create links and nodes, note that networkX needs links in tuples
 for node in links: # Change each link and changes to tuple so it can be added
-	diG.add_edge(u_of_edge=node[0], v_of_edge=node[1], audioElem=node[2])
+	diG.add_edge(u_of_edge=node[0], v_of_edge=node[1], audioElem=node[2], song=node[5])
 
-# List of artists by number of times sampled
-most_sampled = {}
-# List of artists by number of times they used a sample
-most_samples = {}
-# Get degrees of each node
-for node in diG.nodes:
-	most_sampled[node] = diG.in_degree(node)
-	most_samples[node] = diG.out_degree(node)
+# # List of tracks by number of times sampled
+# sampled_tracks = collections.defaultdict(int)
+# for sampledSong in networkx.get_edge_attributes(diG, 'song').values():
+# 	sampled_tracks[sampledSong] += 1
+# most_sampled_tracks = sorted(sampled_tracks.items(), key=lambda track: track[1])
+# # Graph of tracks by number of times sampled
+# top_10_sampled_tracks = most_sampled_tracks[-10:]
+# fig, ax = plt.subplots()
+# plt.xticks(rotation=33)
+# plt.title('Most Sampled Track by Count')
+# plt.ylabel('Count')
+# plt.xlabel('Sampled Track')
+# plt.gcf().subplots_adjust(bottom=0.2)
+# # Separate tuple of top artists for graphing
+# top_10_tracks, top_10_tracks_counts = zip(*top_10_sampled_tracks)
+# for i, v in enumerate(top_10_sampled_tracks):
+# 	ax.text(i - .15, v[1], str(v[1]))
+# plt.bar(x=top_10_tracks, height=top_10_tracks_counts)
+# 	# Top 10 info: (James Brown, Public Enemy, Honey Drippers, Melvin Bliss, 
+# 	# Run-DMC, Doug E. Fresh, James Brown, Beside, Lyn Collins, The Winstons)
+
+# # List of artists by number of times sampled
+# most_sampled = {}
+# # List of artists by number of times they used a sample
+# most_samples = {}
+# # Get degrees of each node
+# for node in diG.nodes:
+# 	most_sampled[node] = diG.in_degree(node)
+# 	most_samples[node] = diG.out_degree(node)
 
 # Print number of times sampled
 # print(sorted(most_sampled.items(), key=lambda sample: sample[1]))
@@ -84,7 +135,7 @@ for node in diG.nodes:
 # Print associated genre
 # print(networkx.get_node_attributes(diG, 'genre'))
 
-# # Top 10 sampled and top 10 samplers
+# # Top 10 sampled artists and top 10 sampling artists
 # top_10_sampled = sorted(most_sampled.items(), key=lambda sample: sample[1])[-10:]
 # top_10_sampling = sorted(most_samples.items(), key=lambda sample: sample[1])[-10:]
 # 	# Most sampled artists: ('Beside', 203), ('Lyn Collins', 233), ('Public Enemy', 258), ('The Winstons', 272), ('James Brown', 599)
@@ -132,4 +183,4 @@ for node in diG.nodes:
 # color_map_genre = [hash(genre) for genre in networkx.get_node_attributes(diG, 'genre').values()]
 # networkx.draw(diG, layout, with_labels=True, cmap=plt.cm.RdYlBu, node_color=color_map_genre, 
 # 	node_size=[v * 100 for v in most_sampled.values()], font_size=8)
-# plt.savefig('topSamplingArtistsCount.png')
+plt.savefig('samplingTimePeriod.png', dpi=199)

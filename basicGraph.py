@@ -86,7 +86,8 @@ top_10_tracks, top_10_tracks_counts = zip(*top_10_sampled_tracks)
 for i, v in enumerate(top_10_sampled_tracks):
 	ax.text(i - .15, v[1], str(v[1]))
 plt.bar(x=top_10_tracks, height=top_10_tracks_counts)
-
+	# Top 10 info: (James Brown, Public Enemy, Honey Drippers, Melvin Bliss, 
+	# Run-DMC, Doug E. Fresh, James Brown, Beside, Lyn Collins, The Winstons)
 
 # List of artists by number of times sampled
 most_sampled = {}
