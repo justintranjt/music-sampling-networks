@@ -59,6 +59,11 @@ However, the unique method by which I am investigating musical sampling networks
 
 In fact, the inclusion of audio elements is made possible by the updated WhoSampled dataset that other researchers have not had access to in the past as former pieces of research did not have this property within their datasets. Others have not tackled the subject with the focus on sampled audio elements nor sampling over time, but my approach is adequate for investigating previously unnoticed factors/properties of sampling patterns as the dataset supports the cataloging of these attributes.
 
+\section{Implementation}
+Louvain: Modularity is a scale value between -1 and 1 that measures the density of edges inside communities to edges outside communities
+
+first small communities are found by optimizing modularity locally on all nodes, then each small community is grouped into one node and the first step is repeated. 
+
 \nocite{*}
 \bstctlcite{bstctl:etal, bstctl:nodash, bstctl:simpurl}
 \bibliographystyle{IEEEtranS}

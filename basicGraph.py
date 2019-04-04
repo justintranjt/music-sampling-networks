@@ -13,7 +13,7 @@ with open('whosampled30k.csv', mode='r', encoding="cp850") as dataSamples:
 	dataSamples = csv.reader(dataSamples)
 	# Read out header with row
 	header = next(dataSamples)
-	rowData = [row for row in dataSamples]
+	rowData = [row for row in dataSamples if int(row[3]) >= 2000 and int(row[3]) <= 2009]
 
 # # Get all unique artists so we have 1:1 between IDs and artists
 # uniqueSamplers = list(set([row[0] for row in rowData]))
@@ -21,23 +21,26 @@ with open('whosampled30k.csv', mode='r', encoding="cp850") as dataSamples:
 # # print('Unique Samplers: ' + str(len(uniqueSamplers)))
 # # print('Unique Samplees: ' + str(len(uniqueSamplees)))
 
-# # Count the number of songs in each genre
+# Count the number of songs in each genre
 # uniqueGenreCountsSamplers = list(row[2] for row in rowData)
-# uniqueGenreCountsSamplees = list(row[6] for row in rowData)
+uniqueGenreCountsSamplees = list(row[6] for row in rowData)
 # samplerCounter = collections.Counter(uniqueGenreCountsSamplers)
 # print('Unique Sampler Genres: ' + str(samplerCounter))
-# sampleeCounter = collections.Counter(uniqueGenreCountsSamplees)
+sampleeCounter = collections.Counter(uniqueGenreCountsSamplees)
 # print('Unique Samplee Genres: ' + str(sampleeCounter))
-# # Display bar graph of sampled genres and sampling genres
-# fig, ax = plt.subplots()
-# for i, v in enumerate(sampleeCounter.values()):
-# 	ax.text(i - .35, v, str(v))
-# plt.xticks(rotation=32)
-# plt.title('Most Sampled Genres by Count')
-# plt.ylabel('Count')
-# plt.xlabel('Genre')
-# plt.gcf().subplots_adjust(bottom=0.15)
-# plt.bar(*zip(*sampleeCounter.items()))
+# Display bar graph of sampled genres and sampling genres
+fig, ax = plt.subplots()
+for i, v in enumerate(sampleeCounter.values()):
+	ax.text(i - .3, v, '{0:.2f}%'.format((v / len(rowData)) * 100))
+plt.xticks(rotation=32)
+plt.title('Most Sampled Genres by Percentage (Sampled in 2000\'s)')
+plt.ylabel('Percentage')
+plt.xlabel('Genre')
+plt.gcf().subplots_adjust(bottom=0.15)
+plt.bar(*zip(*sampleeCounter.items()))
+frame1 = plt.gca()
+plt.gcf().subplots_adjust(bottom=0.15)
+frame1.axes.yaxis.set_ticklabels([])
 	# Hip-hop is the genre that samples the most often overall
 	# Hip-hop is the 2nd-most sampled while Soul/Funk/Disco is the most sampled overall
 	# What are the percentages?
@@ -69,23 +72,23 @@ for node in links: # Change each link and changes to tuple so it can be added
 	diG.add_edge(u_of_edge=node[0], v_of_edge=node[1], audioElem=node[2], song=node[5])
 
 # List of tracks by number of times sampled
-sampled_tracks = collections.defaultdict(int)
-for sampledSong in networkx.get_edge_attributes(diG, 'song').values():
-	sampled_tracks[sampledSong] += 1
-most_sampled_tracks = sorted(sampled_tracks.items(), key=lambda track: track[1])
-# Graph of tracks by number of times sampled
-top_10_sampled_tracks = most_sampled_tracks[-10:]
-fig, ax = plt.subplots()
-plt.xticks(rotation=33)
-plt.title('Most Sampled Track by Count')
-plt.ylabel('Count')
-plt.xlabel('Sampled Track')
-plt.gcf().subplots_adjust(bottom=0.2)
-# Separate tuple of top artists for graphing
-top_10_tracks, top_10_tracks_counts = zip(*top_10_sampled_tracks)
-for i, v in enumerate(top_10_sampled_tracks):
-	ax.text(i - .15, v[1], str(v[1]))
-plt.bar(x=top_10_tracks, height=top_10_tracks_counts)
+# sampled_tracks = collections.defaultdict(int)
+# for sampledSong in networkx.get_edge_attributes(diG, 'song').values():
+# 	sampled_tracks[sampledSong] += 1
+# most_sampled_tracks = sorted(sampled_tracks.items(), key=lambda track: track[1])
+# # Graph of tracks by number of times sampled
+# top_10_sampled_tracks = most_sampled_tracks[-10:]
+# fig, ax = plt.subplots()
+# plt.xticks(rotation=33)
+# plt.title('Most Sampled Track by Count')
+# plt.ylabel('Count')
+# plt.xlabel('Sampled Track')
+# plt.gcf().subplots_adjust(bottom=0.2)
+# # Separate tuple of top artists for graphing
+# top_10_tracks, top_10_tracks_counts = zip(*top_10_sampled_tracks)
+# for i, v in enumerate(top_10_sampled_tracks):
+# 	ax.text(i - .15, v[1], str(v[1]))
+# plt.bar(x=top_10_tracks, height=top_10_tracks_counts)
 	# Top 10 info: (James Brown, Public Enemy, Honey Drippers, Melvin Bliss, 
 	# Run-DMC, Doug E. Fresh, James Brown, Beside, Lyn Collins, The Winstons)
 
@@ -153,4 +156,4 @@ for node in diG.nodes:
 # color_map_genre = [hash(genre) for genre in networkx.get_node_attributes(diG, 'genre').values()]
 # networkx.draw(diG, layout, with_labels=True, cmap=plt.cm.RdYlBu, node_color=color_map_genre, 
 # 	node_size=[v * 100 for v in most_sampled.values()], font_size=8)
-plt.savefig('topSampledTracks.png', dpi=199)
+plt.savefig('topSampledGenresSampled00s.png', dpi=199)
