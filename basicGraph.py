@@ -13,7 +13,7 @@ with open('whosampled30k.csv', mode='r', encoding="cp850") as dataSamples:
 	dataSamples = csv.reader(dataSamples)
 	# Read out header with row
 	header = next(dataSamples)
-	rowData = [row for row in dataSamples if int(row[3]) >= 2000 and int(row[3]) <= 2009]
+	rowData = [row for row in dataSamples if int(row[3]) >= 2000 and int(row[3]) <= 2010]
 
 # # Get all unique artists so we have 1:1 between IDs and artists
 # uniqueSamplers = list(set([row[0] for row in rowData]))
@@ -23,24 +23,24 @@ with open('whosampled30k.csv', mode='r', encoding="cp850") as dataSamples:
 
 # Count the number of songs in each genre
 # uniqueGenreCountsSamplers = list(row[2] for row in rowData)
-uniqueGenreCountsSamplees = list(row[6] for row in rowData)
+# uniqueGenreCountsSamplees = list(row[6] for row in rowData)
 # samplerCounter = collections.Counter(uniqueGenreCountsSamplers)
 # print('Unique Sampler Genres: ' + str(samplerCounter))
-sampleeCounter = collections.Counter(uniqueGenreCountsSamplees)
+# sampleeCounter = collections.Counter(uniqueGenreCountsSamplees)
 # print('Unique Samplee Genres: ' + str(sampleeCounter))
 # Display bar graph of sampled genres and sampling genres
-fig, ax = plt.subplots()
-for i, v in enumerate(sampleeCounter.values()):
-	ax.text(i - .3, v, '{0:.2f}%'.format((v / len(rowData)) * 100))
-plt.xticks(rotation=32)
-plt.title('Most Sampled Genres by Percentage (Sampled in 2000\'s)')
-plt.ylabel('Percentage')
-plt.xlabel('Genre')
-plt.gcf().subplots_adjust(bottom=0.15)
-plt.bar(*zip(*sampleeCounter.items()))
-frame1 = plt.gca()
-plt.gcf().subplots_adjust(bottom=0.15)
-frame1.axes.yaxis.set_ticklabels([])
+# fig, ax = plt.subplots()
+# for i, v in enumerate(sampleeCounter.values()):
+# 	ax.text(i - .3, v, '{0:.2f}%'.format((v / len(rowData)) * 100))
+# plt.xticks(rotation=32)
+# plt.title('Most Sampled Genres by Percentage (Sampled in 2000\'s)')
+# plt.ylabel('Percentage')
+# plt.xlabel('Genre')
+# plt.gcf().subplots_adjust(bottom=0.15)
+# plt.bar(*zip(*sampleeCounter.items()))
+# frame1 = plt.gca()
+# plt.gcf().subplots_adjust(bottom=0.15)
+# frame1.axes.yaxis.set_ticklabels([])
 	# Hip-hop is the genre that samples the most often overall
 	# Hip-hop is the 2nd-most sampled while Soul/Funk/Disco is the most sampled overall
 	# What are the percentages?
@@ -138,14 +138,41 @@ for node in diG.nodes:
 # # print(intraGenre)
 # # print(interGenre)
 
-# # Degree centrality
-# centrality = sorted(networkx.degree_centrality(diG).items(),
-# 	key=lambda degCent: degCent[1])
-# # print(centrality)
-# # Betweenness centrality
-# betweenness = sorted(networkx.betweenness_centrality(diG).items(),
-# 	key=lambda begCent: begCent[1])
-# # print(betweenness)
+# A variety of centrality measurements to try and determine the most influential artists
+# https://networkx.github.io/documentation/stable/reference/algorithms/centrality.html
+# Degree centrality
+centrality = sorted(networkx.degree_centrality(diG).items(),
+	key=lambda degCent: degCent[1])
+print(centrality[-10:])
+# Betweenness centrality
+# Consider running networkx.betweenness_centrality(diG, k=some_k)
+# https://stackoverflow.com/questions/32465503/networkx-never-finishes-calculating-betweenness-centrality-for-2-mil-nodes
+betweenness = sorted(networkx.betweenness_centrality(diG).items(),
+	key=lambda begCent: begCent[1])
+print(betweenness[-10:])
+# # Closeness centrality
+closeness = sorted(networkx.closeness_centrality(diG).items(),
+	key=lambda closeCent: closeCent[1])
+print(closeness[-10:])
+# Eigenvector centrality
+# https://stackoverflow.com/questions/43208737/using-networkx-to-calculate-eigenvector-centrality
+eigenvector = sorted(networkx.eigenvector_centrality_numpy(diG).items(),
+	key=lambda eigCent: eigCent[1])
+print(eigenvector[-10:])
+# Katz centrality
+katz = sorted(networkx.katz_centrality(diG).items(),
+	key=lambda katCent: katCent[1])
+print(katz[-10:])
+# PageRank
+page_rank = sorted(networkx.pagerank(diG).items(), key=lambda page: page[1])
+print(page_rank[-10:])
+# # https://networkx.github.io/documentation/stable/reference/algorithms/clustering.html
+# # Clustering
+# clustering_coeffs = sorted(networkx.clustering(diG).items(), key=lambda clus: clus[1])
+# print(clustering_coeffs[-10:])
+# Average clustering
+avg_clustering = networkx.average_clustering(diG)
+print(avg_clustering)
 
 # # Display graph
 # layout = networkx.shell_layout(diG)
@@ -156,4 +183,5 @@ for node in diG.nodes:
 # color_map_genre = [hash(genre) for genre in networkx.get_node_attributes(diG, 'genre').values()]
 # networkx.draw(diG, layout, with_labels=True, cmap=plt.cm.RdYlBu, node_color=color_map_genre, 
 # 	node_size=[v * 100 for v in most_sampled.values()], font_size=8)
-plt.savefig('topSampledGenresSampled00s.png', dpi=199)
+# plt.savefig('topSampledGenresSampled00s.png', dpi=199)
+# plt.show()
