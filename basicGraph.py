@@ -13,7 +13,7 @@ with open('whosampled30k.csv', mode='r', encoding="cp850") as dataSamples:
 	dataSamples = csv.reader(dataSamples)
 	# Read out header with row
 	header = next(dataSamples)
-	rowData = [row for row in dataSamples if int(row[3]) >= 2000 and int(row[3]) <= 2010]
+	rowData = [row for row in dataSamples]
 
 # # Get all unique artists so we have 1:1 between IDs and artists
 # uniqueSamplers = list(set([row[0] for row in rowData]))
@@ -141,7 +141,7 @@ for node in diG.nodes:
 # A variety of centrality measurements to try and determine the most influential artists
 # https://networkx.github.io/documentation/stable/reference/algorithms/centrality.html
 # Degree centrality
-centrality = sorted(networkx.degree_centrality(diG).items(),
+centrality = sorted(networkx.in_degree_centrality(diG).items(),
 	key=lambda degCent: degCent[1])
 print(centrality[-10:])
 # Betweenness centrality
