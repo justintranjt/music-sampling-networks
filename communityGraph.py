@@ -1,11 +1,16 @@
 import csv
 import networkx
 import matplotlib.pyplot as plt
+import matplotlib
 import collections
 import community
 
+# Set font sizes of plots
+font = {'family': 'normal', 'size': 5}
+matplotlib.rc('font', **font)
+
 # Parse through spreadsheet data
-with open('whosampled50.csv', mode='r', encoding="cp850") as dataSamples:
+with open('whosampled30k.csv', mode='r', encoding="cp850") as dataSamples:
 	dataSamples = csv.reader(dataSamples)
 	# Read out header with row
 	header = next(dataSamples)
@@ -101,37 +106,59 @@ for key, val in partition.items():
 	unsortLouv[val].append(key)
 # Arranging largest communities first in sortedLouv
 sortLouvIndex = sorted(unsortLouv, key=lambda k: len(unsortLouv[k]), reverse=True)
-sortedLouv = []
-for i in range(len(sortLouvIndex)):
-	
+topLouvs = []
+for i in range(1):
 	if len(unsortLouv[sortLouvIndex[i]]) > 2:
-		sortedLouv.append(unsortLouv[sortLouvIndex[i]])
+		topLouvs.append(unsortLouv[sortLouvIndex[i]])
 	else:
 		break
-# print(sortedLouv)
+# What is the genre makeup of each community by percentage
+for louvComm in topLouvs:
+	louvCommPercents = collections.defaultdict(float)
+	louvCommGenres = collections.defaultdict(list)
+	for artist in louvComm:
+		louvCommGenres[g.node[artist]['genre']].append(artist)
+	for genre in louvCommGenres:
+		louvCommPercents[genre] = (len(louvCommGenres[genre]) / len(louvComm) * 100)
+	sortedLouvCommPercents = sorted(louvCommPercents.items(), key=lambda k: k[1])
+
+	# Plot percentages
+	fig, ax = plt.subplots()
+	for i, v in enumerate(sortedLouvCommPercents):
+		ax.text(i - .3, v[1], '{0:.2f}%'.format(v[1]))
+	plt.xticks(rotation=32)
+	plt.title('Genres by Percentage in 1st Largest Louvain Community; Community Size = ' + str(len(louvComm)))
+	plt.ylabel('Percentage')
+	plt.xlabel('Genre')
+	plt.gcf().subplots_adjust(bottom=0.15)
+	plt.bar(*zip(*sortedLouvCommPercents))
+	frame1 = plt.gca()
+	plt.gcf().subplots_adjust(bottom=0.15)
+	frame1.axes.yaxis.set_ticklabels([])
 
 # Here is an alternative community-forming algorithm for k-components
 # Arranging largest communities first in kComponents
-sortedkComp = []
-for kComp in networkx.k_components(g)[1]:
-	# Only include k-components greater than 2
-	if len(kComp) > 2:
-		sortedkComp.append(kComp)
-sortedkComp = sorted(sortedkComp, key=len, reverse=True)
-# print(sortedkComp)
+# sortedkComp = []
+# for kComp in networkx.k_components(g)[1]:
+# 	# Only include k-components greater than 2
+# 	if len(kComp) > 2:
+# 		sortedkComp.append(kComp)
+# sortedkComp = sorted(sortedkComp, key=len, reverse=True)
+# print(sortedkComp[-10:])
 
 # TODO: We have communities now; how do we know who they're centered around?
 # Take centrality measurement?
 # Maybe take the top 10 communities only and study those in-depth?
-pos = networkx.spring_layout(g)  # compute graph layout
-# Create edge labels
-edge_labels = networkx.get_edge_attributes(g, 'audioElem')
-networkx.draw_networkx_edge_labels(g, pos, edge_labels, font_size=8)
-# Create color map by genre by mapping respective genres to ints
-color_map_genre = [hash(genre) for genre in networkx.get_node_attributes(g, 'genre').values()]
-plt.axis('off')
-networkx.draw_networkx_nodes(g, pos, node_size=100, cmap=plt.cm.RdYlBu,
-	node_color=color_map_genre)
-networkx.draw_networkx_edges(g, pos, alpha=0.3)
-networkx.draw_networkx_labels(g, pos, font_size=8)
+# pos = networkx.spring_layout(g)  # compute graph layout
+# # Create edge labels
+# edge_labels = networkx.get_edge_attributes(g, 'audioElem')
+# networkx.draw_networkx_edge_labels(g, pos, edge_labels, font_size=8)
+# # Create color map by genre by mapping respective genres to ints
+# color_map_genre = [hash(genre) for genre in networkx.get_node_attributes(g, 'genre').values()]
+# plt.axis('off')
+# networkx.draw_networkx_nodes(g, pos, node_size=100, cmap=plt.cm.RdYlBu,
+# 	node_color=color_map_genre)
+# networkx.draw_networkx_edges(g, pos, alpha=0.3)
+# networkx.draw_networkx_labels(g, pos, font_size=8)
 # plt.show(g)
+plt.savefig('louvain1st.png', dpi=199)
