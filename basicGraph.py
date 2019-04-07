@@ -125,29 +125,40 @@ for node in diG.nodes:
 # 	ax.text(i - .15, v[1], str(v[1]))
 # plt.bar(x=top_10_artists, height=top_10_artists_counts)
 
-# Get all intragenre and intergenre sample ratios
-genreDict = collections.defaultdict(int)
-genreDictSize = 0
-for edge in diG.edges():
-	# Divide genre of choice into sampled genres by dict key
-	if diG.nodes()[edge[0]]['genre'] == 'World':
-		genreDict[diG.nodes()[edge[1]]['genre']] += 1
-		genreDictSize += 1
-for genre in genreDict:
-	genreDict[genre] = (genreDict[genre] / genreDictSize) * 100
+# # Get all intragenre and intergenre sample ratios
+# genreDict = collections.defaultdict(int)
+# genreDictSize = 0
+# for edge in diG.edges():
+# 	print(diG.get_edge_data(edge[0], edge[1]))
+# 	# Divide genre of choice into sampled genres by dict key
+# 	if diG.nodes()[edge[0]]['genre'] == 'World':
+# 		genreDict[diG.nodes()[edge[1]]['genre']] += 1
+# 		genreDictSize += 1
+# for genre in genreDict:
+# 	genreDict[genre] = (genreDict[genre] / genreDictSize) * 100
 
+# Get all intragenre and intergenre sample ratios
+audioElemSampledDict = collections.defaultdict(int)
+audioElemSampledDictSize = 0
+for edge in diG.edges():
+	audioElemSampled = diG.get_edge_data(edge[0], edge[1])['audioElem']
+	# Divide genre of choice into sampled genres by dict key
+	if diG.nodes()[edge[1]]['genre'] == 'Soul/Funk/Disco':
+		audioElemSampledDict[audioElemSampled] += 1
+		audioElemSampledDictSize += 1
+for genre in audioElemSampledDict:
+	audioElemSampledDict[genre] = (audioElemSampledDict[genre] / audioElemSampledDictSize) * 100
+print(audioElemSampledDict)
 fig, ax = plt.subplots()
-for i, v in enumerate(genreDict.values()):
-	ax.text(i - .37, v, '{0:.2f}%'.format(v))
-plt.xticks(rotation=32)
-plt.title('World\'s Most Sampled Genres')
+for i, v in enumerate(audioElemSampledDict.values()):
+	ax.text(i - .18, v, '{0:.2f}%'.format(v))
+plt.title('Soul/Funk/Disco\'s Most Sampled Audio Elements')
 plt.ylabel('Percentage')
-plt.xlabel('Genre')
+plt.xlabel('Audio Element')
 plt.gcf().subplots_adjust(bottom=0.15)
-plt.bar(*zip(*genreDict.items()))
+plt.bar(*zip(*audioElemSampledDict.items()))
 frame1 = plt.gca()
 plt.gcf().subplots_adjust(bottom=0.15)
-frame1.axes.yaxis.set_ticklabels([])
 
 # A variety of centrality measurements to try and determine the most influential artists
 # https://networkx.github.io/documentation/stable/reference/algorithms/centrality.html
@@ -194,5 +205,5 @@ frame1.axes.yaxis.set_ticklabels([])
 # color_map_genre = [hash(genre) for genre in networkx.get_node_attributes(diG, 'genre').values()]
 # networkx.draw(diG, layout, with_labels=True, cmap=plt.cm.RdYlBu, node_color=color_map_genre, 
 # 	node_size=[v * 100 for v in most_sampled.values()], font_size=8)
-plt.savefig('genreRatioWorld.png', dpi=199)
+plt.savefig('audioElemMostSampledSoul.png', dpi=199)
 # plt.show()
