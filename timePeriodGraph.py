@@ -16,34 +16,55 @@ with open('whosampled30k.csv', mode='r', encoding="cp850") as dataSamples:
 	# rowData = [row for row in dataSamples if int(row[7]) >= 1990 and int(row[7]) <= 1999]
 	rowData = [row for row in dataSamples]
 
-# Top sampled time periods
+# # Top sampled time periods
+# fig, ax = plt.subplots()
+# sampled_by_period = collections.defaultdict(int)
+# for row in rowData:
+# 	sampled_by_period[row[7]] += 1
+# sorted_sampled_by_period = sorted(sampled_by_period.items())
+# del sorted_sampled_by_period[0]
+# plt.scatter(*zip(*sorted_sampled_by_period), c='r', s=3)
+# plt.plot(*zip(*sorted_sampled_by_period))
+# plt.xticks(rotation=90)
+# ax.set_xticks(ax.get_xticks()[::2])
+# plt.title('Count of Sampled Tracks by Time Period')
+# plt.xlabel('Year')
+# plt.ylabel('Count')
+# # Top sampling time periods
+# sampling_by_period = collections.defaultdict(int)
+# for row in rowData:
+# 	sampling_by_period[row[3]] += 1
+# sorted_sampling_by_period = sorted(sampling_by_period.items())
+# del sorted_sampling_by_period[0]
+# del sorted_sampling_by_period[-1]
+# plt.scatter(*zip(*sorted_sampling_by_period), c='r', s=3)
+# plt.plot(*zip(*sorted_sampling_by_period))
+# plt.xticks(rotation=90)
+# ax.set_xticks(ax.get_xticks()[::2])
+# plt.title('Count of Sampling Tracks by Time Period')
+# plt.xlabel('Year')
+# plt.ylabel('Count')
+
+# Graphing audio elements used by time period
+
+audio_elem_period = collections.defaultdict(int)
+audio_elem_period_size = 0
+for row in rowData:
+	if int(row[3]) >= 2000 and int(row[3]) <= 2010:
+		audio_elem_period[row[9]] += 1
+		audio_elem_period_size += 1
+for audio_elem in audio_elem_period:
+	audio_elem_period[audio_elem] = (audio_elem_period[audio_elem] / audio_elem_period_size) * 100
 fig, ax = plt.subplots()
-sampled_by_period = collections.defaultdict(int)
-for row in rowData:
-	sampled_by_period[row[7]] += 1
-sorted_sampled_by_period = sorted(sampled_by_period.items())
-del sorted_sampled_by_period[0]
-plt.scatter(*zip(*sorted_sampled_by_period), c='r', s=3)
-plt.plot(*zip(*sorted_sampled_by_period))
-plt.xticks(rotation=90)
-ax.set_xticks(ax.get_xticks()[::2])
-plt.title('Count of Sampled Tracks by Time Period')
+sorted_audio_elem_period = sorted(audio_elem_period.items())
+del sorted_audio_elem_period[0]
+plt.bar(*zip(*sorted_audio_elem_period))
+for i, v in enumerate(sorted_audio_elem_period):
+	ax.text(i - .15, v[1], '{0:.2f}%'.format(v[1]))
+# plt.title('Sampled Audio Elements from 1970\'s')
+plt.title('Audio Elements Sampled in 2000\'s')
 plt.xlabel('Year')
-plt.ylabel('Count')
-# Top sampling time periods
-sampling_by_period = collections.defaultdict(int)
-for row in rowData:
-	sampling_by_period[row[3]] += 1
-sorted_sampling_by_period = sorted(sampling_by_period.items())
-del sorted_sampling_by_period[0]
-del sorted_sampling_by_period[-1]
-plt.scatter(*zip(*sorted_sampling_by_period), c='r', s=3)
-plt.plot(*zip(*sorted_sampling_by_period))
-plt.xticks(rotation=90)
-ax.set_xticks(ax.get_xticks()[::2])
-plt.title('Count of Sampling Tracks by Time Period')
-plt.xlabel('Year')
-plt.ylabel('Count')
+plt.ylabel('Percentage')
 
 # Get all unique artists so we have 1:1 between IDs and artists
 # uniqueSamplers = list(set([row[0] for row in rowData]))
@@ -183,4 +204,5 @@ for node in links: # Change each link and changes to tuple so it can be added
 # color_map_genre = [hash(genre) for genre in networkx.get_node_attributes(diG, 'genre').values()]
 # networkx.draw(diG, layout, with_labels=True, cmap=plt.cm.RdYlBu, node_color=color_map_genre, 
 # 	node_size=[v * 100 for v in most_sampled.values()], font_size=8)
-plt.savefig('samplingTimePeriod.png', dpi=199)
+plt.savefig('audioElemSampledIn00s.png', dpi=199)
+# plt.show()
