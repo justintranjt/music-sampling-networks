@@ -50,9 +50,9 @@ with open('whosampled30k.csv', mode='r', encoding="cp850") as dataSamples:
 audio_elem_period = collections.defaultdict(int)
 audio_elem_period_size = 0
 for row in rowData:
-	# if int(row[3]) >= 2000 and int(row[3]) <= 2010:
-	audio_elem_period[row[9]] += 1
-	audio_elem_period_size += 1
+	if int(row[7]) >= 2000 and int(row[7]) <= 2010:
+		audio_elem_period[row[9]] += 1
+		audio_elem_period_size += 1
 for audio_elem in audio_elem_period:
 	audio_elem_period[audio_elem] = (audio_elem_period[audio_elem] / audio_elem_period_size) * 100
 fig, ax = plt.subplots()
@@ -62,8 +62,8 @@ plt.bar(*zip(*sorted_audio_elem_period))
 for i, v in enumerate(sorted_audio_elem_period):
 	ax.text(i - .15, v[1], '{0:.2f}%'.format(v[1]))
 # plt.title('Sampled Audio Elements from 1970\'s')
-plt.title('Percentage of Audio Elements Sampled Overall')
-plt.xlabel('Year')
+plt.title('Sampled Audio Elements From 2000\'s')
+plt.xlabel('Audio Element Type')
 plt.ylabel('Percentage')
 
 # Get all unique artists so we have 1:1 between IDs and artists
@@ -204,5 +204,5 @@ for node in links: # Change each link and changes to tuple so it can be added
 # color_map_genre = [hash(genre) for genre in networkx.get_node_attributes(diG, 'genre').values()]
 # networkx.draw(diG, layout, with_labels=True, cmap=plt.cm.RdYlBu, node_color=color_map_genre, 
 # 	node_size=[v * 100 for v in most_sampled.values()], font_size=8)
-plt.savefig('audioElemSampledOverall.png', dpi=199)
+plt.savefig('audioElemSampledFrom00s.png', dpi=199)
 # plt.show()
