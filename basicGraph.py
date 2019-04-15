@@ -205,5 +205,5 @@ plt.gcf().subplots_adjust(bottom=0.15)
 # color_map_genre = [hash(genre) for genre in networkx.get_node_attributes(diG, 'genre').values()]
 # networkx.draw(diG, layout, with_labels=True, cmap=plt.cm.RdYlBu, node_color=color_map_genre, 
 # 	node_size=[v * 100 for v in most_sampled.values()], font_size=8)
-plt.savefig('audioElemMostSampledSoul.png', dpi=199)
-# plt.show()
+# plt.savefig('audioElemMostSampledSoul.png', dpi=199)
+plt.show()

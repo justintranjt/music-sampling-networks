@@ -6,8 +6,10 @@
 
 \widowpenalty=9999
 
+\usepackage{graphicx}
 \usepackage[normalem]{ulem}
-
+\useunder{\uline}{\ul}{}
+\graphicspath{ {./../Analysis/} }
 \begin{document}
 
 \title{Measuring Musical Sampling Impact Through Network Analysis}
@@ -60,10 +62,201 @@ However, the unique method by which I am investigating musical sampling networks
 In fact, the inclusion of audio elements is made possible by the updated WhoSampled dataset that other researchers have not had access to in the past as former pieces of research did not have this property within their datasets. Others have not tackled the subject with the focus on sampled audio elements nor sampling over time, but my approach is adequate for investigating previously unnoticed factors/properties of sampling patterns as the dataset supports the cataloging of these attributes.
 
 \section{Implementation}
-Louvain: Modularity is a scale value between -1 and 1 that measures the density of edges inside communities to edges outside communities
+Sampling usage is a directional relationship represented by a directed edge from the sampling artist to the sampled artist. While it is possible for an artist to sample another artist on multiple instances, our dataset does not have any of these occurrences. Had this occurred, each directed edge would contain a weight whereby an added weight of 1 would indicate an additional sample. But, our network is only directed and not weighted. I visualized the graphs and data with Matplotlib and carried out network measurements and operations using the NetworkX library for Python. \cite{NetworkX,Matplotlib}
 
-first small communities are found by optimizing modularity locally on all nodes, then each small community is grouped into one node and the first step is repeated. 
+This paper utilizes a combination of common statistical measures as well as network measures to determine influential genres and artists as well as the specific pattern of properties each of these may follow. All analyses were performed on the entire dataset encompassing all time periods in addition to analyses limited to specific decade-long time periods. This was done to study the "release date" property of the WhoSampled dataset and to view changing musical influence patterns over time. Combining all of these measures and analyzing the patterns of sampling properties allows us to identify the most influential parties in the music sampling community.
+\subsection{Data}
+The data needed to build a musical sampling network was acquired from the WhoSampled database. \cite{WhoSampled} This database contains approximately 300,000 instances of recorded samples as reported by volunteers and WhoSampled's sample identification algorithms. The dataset used for this project consisted of 30,000 instances of sampling. Each sample contained data on both the sampling and sampled artist names, song titles, genres, and release years. In addition, the type of audio element sampled was included for each sample. For the purposes of this project, we define sampling as music, speech, or sound that is reused directly from a recording. As such, "recordings" from before 1877 (before the existence of the first phonograph recording) were removed from the dataset. Samples including artists, "The Bible" and "Traditional Folk", were also removed as the former indicates written passages from The Bible and the latter indicates written material from traditional folk songs. The final dataset contained 29,667 samples. I created a directed graph where each node represents an artist. Each edge from Node A to Node B represents Artist A's usage of Artist B's song in a song (i.e. a sample). Each edge also contains a single edge property indicating the specific audio element sampled from Artist B's song. Note that a single song may sample from multiple songs. This results in a network where there is a greater number of edges than nodes.
+\subsection{Statistical Measures and Patterns}
+The statistical measures amount to finding the correlation between two different properties of a sample. We look at the proportions of sampling usage while holding one of these properties stable to find possible patterns. For example, we hold a single genre stable and find the proportions of audio element types that are sampled from that genre. Or, we may hold a genre stable and find the proportions of audio elements that genre samples from others. For each of these measures, analysis is performed over the entire dataset but is then separated by time period to also discover any time-sensitive patterns. These findings are then combined into various tables for comprehension and plots for visual display. 
+\subsection{Centrality and Influence (Network Measures)}
+Centrality is used to gain knowledge about how connected certain nodes are in relation to the entire network. We seek to identify influential nodes based on how connected they are to the rest of the network as this implies an artist is sampled more often. 
 
+For some centrality measurements this can mean influence only in regards to being sampled by others (i.e. a node's in-degree). Other centrality measurements also take into account how often an artist samples others (i.e. a node's out-degree). Note that betweenness centrality, eigenvector centrality, and Katz centrality do not take into account the directionality of the edges. These measures tell us more about artists that are both heavily sampled by other artists and heavily sample other artists themselves. 
+\subsubsection{In-Degree Centrality}
+is the conceptually simplest measure of centrality. The in-degree centrality for any node $v$ is the fraction of nodes from the entire graph $G$ that its edges are connected to. The centrality values are normalized by dividing by the maximum possible degree in a graph $n-1$, where $n$ is the number of nodes in $G$. Despite being a simple measure of centrality, in-degree centrality returns the artists that have been sampled the most often from the dataset. This is a telling measure of influence as designated by our definition as a greater number of times sampled amounts to greater sampling influence.
+\subsubsection{Betweenness Centrality}
+of a node $v$ is the sum of the fraction of all-pairs shortest paths that pass through $v$. A higher betweenness centrality represents a node with greater influence over the network as more information passes through that node. The node acts as a "bridge" between other nodes in a network.
+\begin{equation}
+c_B(v) =\sum_{s,t \in V} \frac{\sigma(s, t|v)}{\sigma(s, t)},
+\end{equation}
+where $V$ is the set of nodes, $\sigma(s,t)$ is the number of shortest paths from $s$ to $t$, and $\sigma(s,t|v)$ is the number of those paths passing through some node $v$ other than $s,t$. If $s=t$, $\sigma(s,t)=1$, and if $v\in s,t$, $\sigma(s,t|v)=0$. In the context of music sampling, an artist with higher betweenness centrality has greater influence as a sampled artist and/or samples other artists frequently. Removing an artist with high betweenness centrality would have the potential to disconnect subgraphs if removed indicating their level of embeddedness in the sampling community.
+\subsubsection{Closeness Centrality}
+of a node $u$ is the reciprocal of the average shortest path distance to $u$ over all $n-1$ reachable nodes. A higher closeness centrality score implies an artist is best placed to influence the entire network.
+\begin{equation}
+C(u) = \frac{n - 1}{\sum_{v=1}^{n-1} d(v, u)},
+\end{equation}
+where $d(v, u)$ is the shortest-path distance between $v$ and $u$, and $n$ is the number of nodes that can reach $u$. Note that because the graph is not completely connected, this algorithm computes the closeness centrality for each connected part separately scaled by that subgraph's size.
+\subsubsection{Eigenvector Centrality}
+computes the centrality for a node based on the centrality of its neighbors. Much like in-degree centrality, eigenvector centrality measures a node's influence based on the number of incoming edges it has. Eigenvector centrality builds upon this by taking into account how connected their neighbors are to the rest of the network.
+The eigenvector centrality for node $i$ is the $i$'th element of the vector $x$ defined by the equation,
+\begin{equation}
+Ax = \lambda x
+\end{equation}
+where A is the adjacency matrix of the graph $G$ with eigenvalue $\lambda$. 
+
+Note that the power iteration method used to calculate the eigenvector centrality is not used in our algorithm as the graph is simply too large and power iteration fails to converge. Power iteration guarantees that there is a unique solution $x$, all of whose entries are positive, if $\lambda$ is the largest eigenvalue of the adjacency matrix $A$. As a result, we utilize a separate method for determining the eigenvector centrality that does not guarantee the same properties for $x$.
+\subsubsection{Katz Centrality}
+computes the relative influence of a node within a network by measuring the number of the immediate neighbors (first degree nodes) and also all other nodes in the network that connect to the node under consideration through these immediate neighbors. Essentially, Katz centrality determines a node's centrality based on the centrality of its neighbors. It is procedurally similar to eigenvector centrality. The Katz centrality for a single node $i$ is, 
+\begin{equation}
+x_i = \alpha \sum_{j} A_{ij} x_j + \beta,
+\end{equation} where $A$ is graph $G$'s adjacency matrix. 
+\subsubsection{PageRank}
+computes a ranking of the nodes in the graph $G$ based on the structure of the incoming links much like eigenvector centrality. The main difference lies in PageRank's ability to account for edge direction which is important for finding the most influential sampled artists. Though originally used for ranking web-pages, it is included in network analysis modules like NetworkX due to its success in determining highly influential nodes. Eigenvector centrality and Katz centrality also attempt to keep the neighboring node importance in mind.
+\subsection{Groupings and Segmentation (Network Measures)}
+Clustering coefficients are normally used to group and identify how many tightly clustered groups are present in the entire network. Identifying communities in a graph allows us to determine subgroups of artists that exclusively sample from each other and have the potential to display unique properties regarding the types of samples they employ in their music.
+\subsubsection{Average Clustering Coefficient}
+for the graph is the average, 
+\begin{equation}
+C = \frac{1}{n}\sum_{v \in G} c_v,
+\end{equation} where $n$ is the number of nodes in graph $G$. It describes how tight-knit groups are in the entire network.
+
+Note that there is an additional "local clustering coefficient" measure that is often used to determine how close a node in the network is to forming a clique with its neighbors. Because our graph is not completely connected, there are many misleading results that occur with local clustering coefficient where the nodes in small subgraphs have a maximum local clustering coefficient of 1. This occurs frequently with pairwise relationships in the graph and was therefore discarded in favor of only using the average clustering coefficient for the entire graph.
+\subsubsection{Louvain Modularity}
+is a scale value between -1 and 1 that measures the density of edges inside communities to edges outside communities. First, small communities are found by optimizing modularity locally on all nodes, then each small community is grouped into one node and the first step is repeated.
+
+We compute the partition of the nodes which maximizes the modularity. Modularity is defined as
+\begin{equation}
+Q={\frac {1}{2m}}\sum \limits _{ij}{\bigg [}A_{ij}-{\frac {k_{i}k_{j}}{2m}}{\bigg ]}\delta (c_{i},c_{j}),
+\end{equation} where $A_{ij}$ represents the edge weight between nodes $i$ and $j$;
+$k_{i}$ and $k_{j}$ are the sum of the weights of the edges attached to nodes $i$ and $j$, respectively;
+$2m$ is the sum of all of the edge weights in the graph; 
+$c_{i}$ and $c_{j}$ are the communities of the nodes;
+$\delta$ is a simple delta function. By isolating these Louvain communities, we are able to analyze the sampling makeup of these communities and view at a closer scale which artists and genres generally sample from each other. This can be used to verify the broader statistics we discover about the entire dataset.  
+\section{Results}
+\subsection{Verifying Historical Musical Sampling Beliefs}
+\subsubsection{Did "Grand Upright Music, Ltd. v. Warner Bros. Records Inc." end sampling?}
+The infamous court case in 1991...
+\begin{figure}[H]
+\includegraphics{TimePeriods/samplingTimePeriod}
+\caption{Count of Sampling Tracks by Time Period}
+\centering
+\end{figure}
+As seen in Figure xxx, sampling took a huge downturn from having up to ~1200 songs (out of the dataset) with samples in 1991 with an observably sharp downturn in sampling until 2001 when yearly sampling volume rose again.
+\subsubsection{Does Hip-Hop sample music more often than other genres?}
+Yes
+\begin{figure}[H]
+\includegraphics{topSamplingGenresPercent}
+\caption{Most Sampling Genres Overall}
+\centering
+\end{figure}
+\subsection{Most Influential Genres}
+It's Soul/Funk/Disco
+\begin{figure}[H]
+\includegraphics{topSampledGenresPercent}
+\caption{Most Sampled Genres Overall}
+\centering
+\end{figure}
+\subsection{Intra-genre and Inter-genre Sampling Strength}
+Intra-genre sampling is a strong factor. 32.6\% of samples by artists are from other artists within their same genre.
+\begin{figure}[H]
+\includegraphics{./genreRatio/genreRatioHiphop}
+\caption{Hip-Hop Sampling Proportions}
+\centering
+\end{figure}
+\subsection{Patterns in Audio Element Sampling}
+No patterns emerged
+\begin{figure}[H]
+\includegraphics{audioElemSampledOverall}
+\caption{Most Sampled Audio Elements Overall}
+\centering
+\end{figure}
+But look at this ego graph of The Winstons where nearly all samplers only sample their drum break!
+\begin{figure}[H]
+\includegraphics{./EgoGraphs/egoGraphMostSampled2TheWinstons}
+\caption{The Winstons' Ego Graph}
+\centering
+\end{figure}
+\subsection{Most Influential Artists}
+\begin{table}[H]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+\textbf{Rank} & \textbf{In-Degree Centrality} & \textbf{Betweenness Centrality} & \textbf{Closeness Centrality} & \textbf{Eigenvector Centrality} & \textbf{Katz Centrality} & \textbf{PageRank} \\ \hline
+1. & James Brown & Public Enemy & James Brown & James Brown & James Brown & James Brown \\ \hline
+2. & The Winstons & Beastie Boys & Lyn Collins & LL Cool J & Public Enemy & Lyn Collins \\ \hline
+3. & Public Enemy & LL Cool J & The J.B.'s & Run-DMC & Lyn Collins & Afrika Bambaataa \\ \hline
+4. & Lyn Collins & De La Soul & Fred Wesley & Lyn Collins & Run-DMC & Public Enemy \\ \hline
+5. & Beside & Jay-Z & Beside & Public Enemy & LL Cool J & The Winstons \\ \hline
+\end{tabular}%
+}
+\caption{Top Artist Centralities (All Time Periods)}
+\end{table}
+\begin{table}[H]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+\textbf{Rank} & \textbf{In-Degree Centrality} & \textbf{Betweenness Centrality} & \textbf{Closeness Centrality} & \textbf{Eigenvector Centrality} & \textbf{Katz Centrality} & \textbf{PageRank} \\ \hline
+1. & James Brown & Public Enemy & James Brown & James Brown & James Brown & James Brown \\ \hline
+2. & Beside & Kurtis Blow & The J.B.'s & John Davis and the Monster Orchestra & Beside & Fred Wesley \\ \hline
+3. & Run-DMC & Beastie Boys & Fred Wesley & Kurtis Blow & Run-DMC & The J.B.'s \\ \hline
+4. & Public Enemy & Run-DMC & Beside & Run-DMC & Kurtis Blow & Afrika Bambaataa \\ \hline
+5. & Kurtis Blow & James Brown & Afrika Bambaataa & The J.B.'s & Public Enemy & Beside \\ \hline
+\end{tabular}%
+}
+\caption{Top Artist Centralities (1980's)}
+\end{table}
+\begin{table}[H]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+\textbf{Rank} & \textbf{In-Degree Centrality} & \textbf{Betweenness Centrality} & \textbf{Closeness Centrality} & \textbf{Eigenvector Centrality} & \textbf{Katz Centrality} & \textbf{PageRank} \\ \hline
+1. & James Brown & Public Enemy & James Brown & James Brown & James Brown & James Brown \\ \hline
+2. & Public Enemy & Masta Ace Incorporated & Lyn Collins & Lyn Collins & Public Enemy & Lyn Collins \\ \hline
+3. & The Winstons & LL Cool J & Fred Wesley & Fred Wesley & Lyn Collins & Fred Wesley \\ \hline
+4. & Lyn Collins & Beastie Boys & Melvin Bliss & Parliament & N.W.A. & Public Enemy \\ \hline
+5. & Run-DMC & De La Soul & Parliament & LL Cool J & Run-DMC & The Winstons \\ \hline
+\end{tabular}%
+}
+\caption{Top Artist Centralities (1990's)}
+\end{table}
+\begin{table}[H]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+\textbf{Rank} & \textbf{In-Degree Centrality} & \textbf{Betweenness Centrality} & \textbf{Closeness Centrality} & \textbf{Eigenvector Centrality} & \textbf{Katz Centrality} & \textbf{PageRank} \\ \hline
+1. & James Brown & Jay-Z & The Notorious B.I.G. & The Notorious B.I.G. & The Notorious B.I.G. & Run-DMC \\ \hline
+2. & The Winstons & Public Enemy & James Brown & Public Enemy & James Brown & Public Enemy \\ \hline
+3. & The Notorious B.I.G. & Kanye West & Public Enemy & EPMD & Public Enemy & The Notorious B.I.G. \\ \hline
+4. & Beside & 50 Cent & Beside & Run-DMC & Beside & James Brown \\ \hline
+5. & Public Enemy & Nas & Run-DMC & James Brown & The Winstons & Beside \\ \hline
+\end{tabular}%
+}
+\caption{Top Artist Centralities (2000's)}
+\end{table}
+\subsection{Louvain Communities}
+\begin{table}[H]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|l|l}
+\cline{1-5}
+\textbf{n'th Largest Louvain Community} & \multicolumn{4}{c|}{\textbf{Genre (\% in n'th Largest Community)}} &  \\ \cline{1-5}
+\textbf{} & {\ul Hip-Hop/R\&B} & {\ul Electronic/Dance} & {\ul Rock/Pop} & {\ul Soul/Funk/Disco} &  \\ \cline{1-5}
+1. & 55.56\% & 14.23\% & 10.35\% & 7.46\% &  \\ \cline{1-5}
+2. & 59.68\% & 20.45\% & 5.56\% & 7.44\% &  \\ \cline{1-5}
+3. & 56.84\% & 19.04\% & 6.64\% & 8.11\% &  \\ \cline{1-5}
+4. & 55.57\% & 14.06\% & 7.29\% & 9.42\% &  \\ \cline{1-5}
+5. & 12.20\% & 60.59\% & 8.71\% & 2.41\% &  \\ \cline{1-5}
+\end{tabular}%
+}
+\caption{Top Genre Makeup in n'th Largest Louvain Communities}
+\end{table}
+The proportional makeup of each of the largest Louvain communities came to an unsurprising conclusion given our observations with intra-genre sampling: Each of the partitioned communities were dominated by a single genre.
+\begin{figure}[H]
+\includegraphics{LouvainCommunities/louvain1st}
+\caption{Genre Makeup of Largest Louvain Community}
+\centering
+\end{figure}
+As shown in Figure xxx, 55.56\% of artists in the largest Louvain Community are Hip-Hop/R\&B artists, indicating a high level of intra-level sampling and an insular sampling pattern. 
+\section{Conclusion and Future Work}
+\subsection{Conclusion}
+\subsection{Future Work}
+Future studies of musical sampling influence networks can look towards the patterns established by this paper to create an application capable of making predictions about the types of samples likely to be found in a song containing the specific defining characteristics we researched in this project. This predictive analysis could potentially aid developers such as WhoSampled with their music sampling identification software by acting as a false positive check.
+
+From a legal perspective, the sampling patterns that establish the potential for a predictive algorithm could be used for ground truth facts during legal proceedings of musical sampling lawsuits. There are often initial arguments from parties debating whether a song was actually sampled by another song and a predictive algorithm could help determine the likelihood this is true based on an artist's past behaviors within the current musical community's trends.
+
+Legal and historical scholars could also perform a deeper analysis of the dip in sampling volume post-1991 that is correlated with the Grand Upright Music v. Warner Bros. Records copyright case that famously ruled the specifics behind what constitutes a legal sample.
+\section{Acknowledgments}
+I would like to thank Professor Andrea LaPaugh for organizing the Network Analysis Independent Work seminar and advising this project. I would also like to thank Bobray J. Bordelon and Darwin F. Scott of the Princeton University Library for enabling access to the WhoSampled Academic Pro dataset.
 \nocite{*}
 \bstctlcite{bstctl:etal, bstctl:nodash, bstctl:simpurl}
 \bibliographystyle{IEEEtranS}
