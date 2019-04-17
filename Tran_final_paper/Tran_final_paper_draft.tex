@@ -151,7 +151,7 @@ There is a clear drop in sampling volume post-1991 that does not begin to recove
 \end{figure}
 Recall that greater influence is defined as being sampled by more artists. Analysis of influential genres entails considering the entire network and viewing the proportions of nodes with in-degrees greater than one followed by identifying these nodes by genre. The more nodes of a single genre that were sampled, the greater proportion of samples that came from that genre. In Figure xxx, we see two genres that are deemed highly influential and are sampled above all other genres. Soul/Funk/Disco is the sampled genre of choice for 31.98\% of artists while Hip-Hop/R\&B is sampled 28.58\% of the time. It appears that Soul/Funk/Disco is slightly more influential as a genre than Hip-Hop/R\&B overall, but the two genres are clearly more influential than all other genres.
 \begin{figure}[H]
-\includegraphics{./TimePeriods/mostSampledPlot}
+\makebox[\textwidth]{\includegraphics{./TimePeriods/mostSampledPlot}}
 \caption{Most Sampled Genres Over Time}
 \centering
 \end{figure}
@@ -174,25 +174,21 @@ If more than one audio element is sampled by a song, the audio element sampled i
 \end{figure}
 However, the analysis of audio elements did show that artists across all genres tend to have either Vocals alone or Multiple Elements sampled from their music. In Figure xxx, 43.20\% of all audio elements sampled are Multiple Elements while 33.41\% are Vocals. 
 \begin{figure}[H]
-\includegraphics{./audioElemSampledBy/audioElemHiphop}
-\caption{Most Sampled Audio Elements by Hip-Hop/R\&B}
+\makebox[\textwidth]{\includegraphics[scale=0.58]{./audioElemSampledBy/audioElemElectronicHip}}
 \centering
-\end{figure}
-\begin{figure}[H]
-\includegraphics{./audioElemSampledBy/audioElemElectronic}
-\caption{Most Sampled Audio Elements by Electronic/Dance}
-\centering
+\caption{Most Sampled Audio Elements by Hip-Hop/R\&B}\caption{Most Sampled Audio Elements by Electronic/Dance}
 \end{figure}
 Viewing the audio elements sampled by Hip-Hop/R\&B and Electronic/Dance (the top sampling genres) 46.13\% of audio elements that Hip-Hop/R\&B artists sample are Multiple Elements and 32.96\% are Vocals while 35.53\% of audio elements that Electronic/Dance artists sample are Multiple Elements and 35.30\% are Vocals lends these same results where Multiple Elements and Vocals are always the two most-sampled audio elements. This dominance of Multiple Elements and Vocals as sampled audio elements stands for every genre analyzed.
 
 Though it is a weak result compared to what a more detailed dataset could have provided, the data appears to reflect a sampling pattern where artists across all genres either sample Multiple Elements of tracks or just Vocals.
 
-But look at this ego graph of The Winstons where nearly all samplers only sample their drum break!
+Despite this failure to find a distinct audio element sampling pattern, it is clear that some artists have a specific element of their music sampled for distinct reasons. Take The Winstons and their widely sampled song "Amen Brother".
 \begin{figure}[H]
 \includegraphics{./EgoGraphs/egoGraphMostSampled2TheWinstons}
 \caption{The Winstons' Ego Graph}
 \centering
 \end{figure}
+As observed in the Ego Graph seen in Figure xxx, nearly all existing samples of The Winstons are specifically Drum samples. Few other audio elements of their music is sampled. Despite this anomaly with The Winstons, general sampling patterns do not follow such a blatant sampling pattern and are much more varied as stated earlier.
 \subsection{Most Influential Artists}
 \begin{table}[H]
 \resizebox{\textwidth}{!}{%
