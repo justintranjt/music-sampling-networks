@@ -65,7 +65,7 @@ In fact, the inclusion of audio elements is made possible by the updated WhoSamp
 \section{Implementation}
 Sampling usage is a directional relationship represented by a directed edge from the sampling artist to the sampled artist. While it is possible for an artist to sample another artist on multiple instances, our dataset does not have any of these occurrences. Had this occurred, each directed edge would contain a weight whereby an added weight of 1 would indicate an additional sample. But, our network is only directed and not weighted. I visualized the graphs and data with Matplotlib and carried out network measurements and operations using the NetworkX library for Python. \cite{NetworkX,Matplotlib}
 \subsection{Data}
-The data needed to build a musical sampling network was acquired from the WhoSampled database. \cite{WhoSampled} This database contains approximately 300,000 instances of recorded samples as reported by volunteers and WhoSampled's sample identification algorithms. The dataset used for this project consisted of 30,000 instances of sampling selected from the entire database with uniformly random distribution. Each sample contained data on both the sampling and sampled artist names, song titles, genres, and release years. In addition, the type of audio element sampled was included for each sample. For the purposes of this project, we define sampling as music, speech, or sound that is reused from a recording with or without variations such as tempo or pitch. As such, "recordings" from before 1877 (before the existence of the first phonograph recording) were removed from the dataset. Samples including artists, "The Bible" and "Traditional Folk", were also removed as the former indicates written passages from The Bible and the latter indicates written material from traditional folk songs. The final dataset contained 29,667 samples. I created a directed graph where each node represents an artist. Each edge from Node A to Node B represents Artist A's usage of Artist B's song in a song (i.e. a sample). Each edge also contains a single edge property indicating the specific audio element sampled from Artist B's song. Note that a single song may sample from multiple songs. This results in a network where there is a greater number of edges than nodes.
+The data needed to build a musical sampling network was acquired from the WhoSampled database. \cite{WhoSampled} This database contains approximately 300,000 instances of recorded samples as reported by volunteers and WhoSampled's sample identification algorithms. The dataset used for this project consisted of 30,000 instances of sampling selected from the entire database with uniformly random distribution. Each sample contained data on both the sampling and sampled artist names, song titles, genres, and release years. In addition, the type of audio element sampled was included for each sample. For the purposes of this project, we define sampling as music, speech, or sound that is reused from a recording with or without variations such as tempo or pitch. As such, "recordings" from before 1877 (before the existence of the first phonograph recording) were removed from the dataset. Note that sampling data for the 2010's is disproportionately lacking in the WhoSampled database as sampling data is simply slow to be registered onto the database. Samples including artists, "The Bible" and "Traditional Folk", were also removed as the former indicates written passages from The Bible and the latter indicates written material from traditional folk songs. The final dataset contained 29,667 samples. I created a directed graph where each node represents an artist. Each edge from Node A to Node B represents Artist A's usage of Artist B's song in a song (i.e. a sample). Each edge also contains a single edge property indicating the specific audio element sampled from Artist B's song. Note that a single song may sample from multiple songs. This results in a network where there is a greater number of edges than nodes.
 \subsection{Statistical Measures and Patterns}
 The statistical measures amount to finding the correlation between two different properties of a sample. We look at the proportions of sampling usage while holding one of these properties stable to find possible patterns. For example, we hold a single genre stable and find the proportions of audio element types that are sampled from that genre. Or, we may hold a genre stable and find the proportions of audio elements that genre samples from others. For each of these measures, analysis is performed over the entire dataset but is then separated by time period to also discover any time-sensitive patterns. These findings are then combined into various tables for comprehension and plots for visual display. 
 \subsection{Centrality and Influence (Network Measures)}
@@ -126,43 +126,69 @@ By isolating these Louvain communities, we are able to analyze the sampling make
 \subsection{Verifying Historical Musical Sampling Beliefs}
 To prove the validity of the WhoSampled dataset and the network analysis implementation taken to analyze musical influence, sanity checks can be made on popular musical sampling sentiments. These sentiments are easily verifiable given the sampled dataset the operations are performed on is accurate and reflective of the entire sampling community. By verifying these sentiments, there will be greater confidence in the dataset and other operations made on the dataset. Though statistical significance is still preferred when performing statistical operations, this verification gives significance to this project's approach and implementation and allows us to gain valuable background regarding the remaining results of the work. We verify the questions: "Does Hip-Hop sample music more often than other genres" and "Did 'Grand Upright Music Ltd. v. Warner Bros. Records Inc.' slow the sampling trend".
 \subsubsection{Does Hip-Hop sample music more often than other genres?}
-This question is easily answered by analyzing the number of nodes with out-degrees greater than zero and noting the genres of each of these nodes.  
+This question is easily answered by analyzing the number of nodes with out-degrees greater than zero and noting the genres of each of these nodes as an outward-facing edge for some node $x$ indicates a sample usage for node $x$. Over the entire dataset, there is a clear imbalance in which genres utilize sampling the most in their music. 
 \begin{figure}[H]
 \includegraphics{topSamplingGenresPercent}
 \caption{Most Sampling Genres Overall}
+\label{fig:fig1}
+% \label
 \centering
 \end{figure}
-Over the entire dataset, there is a clear imbalance in which genres sample the most in their music. Hip-Hop/R\&B artists make up 64.10\% of all artists that use samples in their music. The second highest sampling genre is Electronic/Dance with 24.81\% of all samples. Artists from these two genres alone make up 88.91\% of all music samplers throughout all musical history. In essence, Hip-Hop is clearly the highest-volume music sampler in the music community compared to all other genres as originally claimed by the general public. 
+From Figure 1, Hip-Hop/R\&B artists make up 64.10\% of all artists that use samples in their music. The second highest sampling genre is Electronic/Dance with 24.81\% of all samples. Artists from these two genres alone make up 88.91\% of all music samplers throughout all musical history. In essence, Hip-Hop/R\&B is clearly the highest-volume music sampler in the music community compared to all other genres as originally claimed by the general public. 
 \subsubsection{Did "Grand Upright Music Ltd. v. Warner Bros. Records Inc." slow the sampling trend?}
 The landmark court case in 1991 placed the first set of federal sampling laws upon artists, theoretically dissuading future artists from utilizing sampling in their music as the process for receiving a clearance to use a sample is often not worth the time or within the budget of many artists.
 \begin{figure}[H]
 \includegraphics{TimePeriods/samplingTimePeriod}
 \caption{Count of Sampling Tracks by Time Period}
+\label{fig:fig2}
 \centering
 \end{figure}
-As seen in Figure xxx, sampling volume saw a huge downturn from having approximately 1200 songs (in the dataset) with samples in year 1991 to approximately 600 samples by 2001. Sampling volume clearly becomes wildly popular in the late 1980's before it abruptly drops around year 1991. This decrease in sampling volume occurs until 2001 when yearly sampling volume finally rises again until year 2011 when sampling volume equalizes the levels seen in 1991.
+As seen in Figure 2, sampling volume saw a huge downturn from having approximately 1200 songs (in the dataset) with samples in year 1991 to approximately 600 samples by 2001. Sampling volume clearly becomes wildly popular in the late 1980's before it abruptly drops around year 1991. This decrease in sampling volume occurs until 2001 when yearly sampling volume finally rises again until year 2011 when sampling volume equalizes the levels seen in 1991. 
 
-There is a clear drop in sampling volume post-1991 that does not begin to recover for another decade as indicated in Figure xxx. While this is correlated with the year of the Grand Upright Music Ltd. v. Warner Bros. Records Inc. ruling, we cannot say that the downturn was a direct result of the ruling. However to answer the claim, we can say that the volume of sampling tracks post-1991 do correspond with a slowing in sampling usage in music overall.
+There is a clear drop in sampling volume post-1991 that does not begin to recover for another decade around 2001 as indicated in Figure 2. While this is correlated with the year of the Grand Upright Music Ltd. v. Warner Bros. Records Inc. ruling, we cannot say that the downturn was a direct result of the ruling. However to answer the claim, we can say that the volume of sampling tracks post-1991 do correspond with a slowing in sampling usage in music overall.
+
+As an aside, there is a large dip in sampling data post-2010. This can be attributed to the lack of sampling data from the 2010's in the WhoSampled database as mentioned in the Implementation.
 \subsection{Most Influential Genres}
 \begin{figure}[H]
 \includegraphics{topSampledGenresPercent}
 \caption{Most Sampled Genres Overall}
+\label{fig:fig3}
 \centering
 \end{figure}
-Recall that greater influence is defined as being sampled by more artists. Analysis of influential genres entails considering the entire network and viewing the proportions of nodes with in-degrees greater than one followed by identifying these nodes by genre. The more nodes of a single genre that were sampled, the greater proportion of samples that came from that genre. In Figure xxx, we see two genres that are deemed highly influential and are sampled above all other genres. Soul/Funk/Disco is the sampled genre of choice for 31.98\% of artists while Hip-Hop/R\&B is sampled 28.58\% of the time. It appears that Soul/Funk/Disco is slightly more influential as a genre than Hip-Hop/R\&B overall, but the two genres are clearly more influential than all other genres.
+Recall that greater influence is defined as being sampled by more artists. Analysis of influential genres entails considering the entire network and viewing the proportions of nodes with in-degrees greater than one followed by identifying these nodes by genre. The more nodes of a single genre that were sampled, the greater proportion of samples that came from that genre. In Figure 3, we see two genres that are deemed highly influential and are sampled above all other genres. Soul/Funk/Disco is the sampled genre of choice for 31.98\% of artists while Hip-Hop/R\&B is sampled 28.58\% of the time. It appears that Soul/Funk/Disco is slightly more influential as a genre than Hip-Hop/R\&B overall, but the two genres are clearly more influential than all other genres.
 \begin{figure}[H]
 \makebox[\textwidth]{\includegraphics{./TimePeriods/mostSampledPlot}}
 \caption{Most Sampled Genres Over Time}
+\label{fig:fig4}
 \centering
 \end{figure}
-From Figure xxx, the early era of music sampling in the 1970's did not display a heavy influence by Soul/Funk/Disco or Hip-Hop/R\&B (which arguably was not invented at the time). Instead, Rock/Pop and Reggae were the genres of choice by samplers only to see a decline in every time period since the 1970's. From the 1980's onwards, Hip-Hop/R\&B and Soul/Funk/Disco established their strong influence. At its peak, Soul/Funk/Disco was sampled by over 40\% of all sampling artists in the 1980's before falling to under 30\% in the 2000's. Hip-Hop/R\&B's popularity as a sampled genre rose dramatically in the 1970's and has made steady, minor increases in sampled proportion since. By being sampled roughly 27\% of the time in the 1980's to 29\% of the time in the 2000's, it has stabilized while Soul/Funk/Disco's sampled proportion dropped. Hip-Hop/R\&B as of the 2000's has taken over as the most influential genre over Soul/Funk/Disco (by a very small margin). From this we can gather that the two aforementioned genres continue to be highly influential but Soul/Funk/Disco's influence may be lessening in the current and future time periods.
+From Figure 4, the early era of music sampling in the 1970's did not display a heavy influence by Soul/Funk/Disco or Hip-Hop/R\&B (which arguably was not invented at the time). Instead, Rock/Pop and Reggae were the genres of choice by samplers only to see a decline in every time period since the 1970's. From the 1980's onwards, Hip-Hop/R\&B and Soul/Funk/Disco established their strong influence. At its peak, Soul/Funk/Disco was sampled by over 40\% of all sampling artists in the 1980's before falling to under 30\% in the 2000's. Hip-Hop/R\&B's popularity as a sampled genre rose dramatically in the 1970's and has made steady, minor increases in sampled proportion since. By being sampled roughly 27\% of the time in the 1980's to 29\% of the time in the 2000's, it has stabilized while Soul/Funk/Disco's sampled proportion dropped. Hip-Hop/R\&B as of the 2000's has taken over as the most influential genre over Soul/Funk/Disco (by a very small margin). From this we can gather that the two aforementioned genres continue to be highly influential but Soul/Funk/Disco's influence may be lessening in the current and future time periods.
 \subsection{Intra-genre and Inter-genre Sampling Strength}
-Intra-genre sampling is a strong factor. 32.6\% of all samples by artists are from other artists within their same genre. This is where we perform the Chi Square confidence test and analyze the p-values between closely proportioned genres. The null hypothesis is that this distribution and the expected distribution (hip hop and soul are equally distributed) are the same.
+Intra-genre sampling is a strong and insignificant factor when an artist decides to sample music. When viewing the entire dataset, 32.6\% of all samples by artists were found to be from other artists within their same genre. This is an insignificant proportion considering one might expect an artist to sample from all genres equally and uniformly. Clearly artists from a genre are inclined to sample from other artists in their genre as it may align more closely to the musical vision they are attempting to reach.
+% This is where we perform the Chi Square confidence test and analyze the p-values between closely proportioned genres. The null hypothesis is that this distribution and the expected distribution (hip hop and soul are equally distributed) are the same.
 \begin{figure}[H]
 \includegraphics{./genreRatio/genreRatioHiphop}
 \caption{Hip-Hop Sampling Proportions}
+\label{fig:fig5}
 \centering
 \end{figure}
+When viewing Figure 5's display of Hip-Hop Sampling Proportions, one can see that Hip-Hop/R\&B artists sample heavily from other artists in their genre as well as Soul/Funk/Disco artists. These two genres comprise over two-thirds of the genres sampled by Hip-Hop/R\&B artists. However, wouldn't one already expect this as Hip-Hop/R\&B and Soul/Funk/Disco are the two most influential genres in music as shown in the previous subsection?
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[scale=0.56]{./genreRatio/genreRatioElectronicRock}}
+\centering
+\caption{Electronic/Dance Sampling Proportions}\caption{Rock/Pop Sampling Proportions}
+\label{fig:fig6}
+\label{fig:fig7}
+\end{figure}
+Despite the strong genre influence of Hip-Hop/R\&B and Soul/Funk/Disco, we are able to observe the effects of artists to sample from within their genre in Figures 6 and 7. Electronic/Dance artists sample Soul/Funk/Disco the most (31.51\% of the time) and Hip-Hop/R\&B third-most (17.25\% of the time) but also sample their own genre second-most. We see this same effect as Rock/Pop artists sample other Rock/Pop artists the most (43.94\% of the time). This same pattern is observed in every other genre's intra-genre sampling proportions. Some genres display this effect more prominently than others.
+\begin{figure}[H]
+\includegraphics{./genreRatio/genreRatioReggae}
+\caption{Reggae Sampling Proportions}
+\label{fig:fig8}
+\centering
+\end{figure}
+From Figure 8, 72.54\% of the samples found in Reggae are also by Reggae artists!
+From these results it appears that it is quite common to observe artists sampling others in their genre despite the heavy influence of major sampled genres addressed in the previous subsection. 
 \subsection{Patterns in Audio Element Sampling}
 The inclusion of sampled audio elements allowed the attempt to derive patterns between genres, sampling time periods, and the specific types of audio elements chosen for samples. However, the reality of the dataset was a less-nuanced set of variables to describe audio elements than hoped.
 
@@ -170,15 +196,18 @@ If more than one audio element is sampled by a song, the audio element sampled i
 \begin{figure}[H]
 \includegraphics{audioElemSampledOverall}
 \caption{Most Sampled Audio Elements Overall}
+\label{fig:fig9}
 \centering
 \end{figure}
-However, the analysis of audio elements did show that artists across all genres tend to have either Vocals alone or Multiple Elements sampled from their music. In Figure xxx, 43.20\% of all audio elements sampled are Multiple Elements while 33.41\% are Vocals. 
+However, the analysis of audio elements did show that artists across all genres tend to have either Vocals alone or Multiple Elements sampled from their music. In Figure 9, 43.20\% of all audio elements sampled are Multiple Elements while 33.41\% are Vocals. 
 \begin{figure}[H]
 \makebox[\textwidth]{\includegraphics[scale=0.58]{./audioElemSampledBy/audioElemElectronicHip}}
 \centering
 \caption{Most Sampled Audio Elements by Hip-Hop/R\&B}\caption{Most Sampled Audio Elements by Electronic/Dance}
+\label{fig:fig10}
+\label{fig:fig11}
 \end{figure}
-Viewing the audio elements sampled by Hip-Hop/R\&B and Electronic/Dance (the top sampling genres) 46.13\% of audio elements that Hip-Hop/R\&B artists sample are Multiple Elements and 32.96\% are Vocals while 35.53\% of audio elements that Electronic/Dance artists sample are Multiple Elements and 35.30\% are Vocals lends these same results where Multiple Elements and Vocals are always the two most-sampled audio elements. This dominance of Multiple Elements and Vocals as sampled audio elements stands for every genre analyzed.
+Viewing the audio elements sampled by Hip-Hop/R\&B and Electronic/Dance (the top sampling genres), 46.13\% of audio elements that Hip-Hop/R\&B artists sample are Multiple Elements and 32.96\% are Vocals while 35.53\% of audio elements that Electronic/Dance artists sample are Multiple Elements and 35.30\% are Vocals. This follows the pattern in which Multiple Elements and Vocals are always the two most-sampled audio elements. This dominance of Multiple Elements and Vocals as sampled audio elements stands for every genre analyzed.
 
 Though it is a weak result compared to what a more detailed dataset could have provided, the data appears to reflect a sampling pattern where artists across all genres either sample Multiple Elements of tracks or just Vocals.
 
@@ -186,9 +215,10 @@ Despite this failure to find a distinct audio element sampling pattern, it is cl
 \begin{figure}[H]
 \includegraphics{./EgoGraphs/egoGraphMostSampled2TheWinstons}
 \caption{The Winstons' Ego Graph}
+\label{fig:fig12}
 \centering
 \end{figure}
-As observed in the Ego Graph seen in Figure xxx, nearly all existing samples of The Winstons are specifically Drum samples. Few other audio elements of their music is sampled. Despite this anomaly with The Winstons, general sampling patterns do not follow such a blatant sampling pattern and are much more varied as stated earlier.
+As observed in the Ego Graph seen in Figure 12, nearly all existing samples of The Winstons are specifically Drum samples. Few other audio elements of their music is sampled. Despite this anomaly with The Winstons, general sampling patterns do not follow such a blatant sampling pattern and are much more varied as stated earlier.
 \subsection{Most Influential Artists}
 \begin{table}[H]
 \resizebox{\textwidth}{!}{%
@@ -203,7 +233,13 @@ As observed in the Ego Graph seen in Figure xxx, nearly all existing samples of 
 \end{tabular}%
 }
 \caption{Top Artist Centralities (All Time Periods)}
+\label{table:table1}
 \end{table}
+Over all time periods, it is important to note the strong presence of James Brown in every centrality measure except for betweenness centrality. Recall that betweenness centrality only refers to the ability of an artist to "bridge" communities due to the samples they use in their music or the music that samples them. Therefore an artist like Public Enemy that is sampled by a diverse set of artists from different genres and sample others in high volumes would display a high betweenness centrality.
+
+Aside from James Brown's missing presence in Betweenness Centrality, he is ranked in the number one position in every other centrality ranking indicating his great influence in  each of the ways centrality can be measured. 
+
+Also note that nearly every artist displayed in the table is a Soul/Funk/Disco or Hip-Hop/R\&B artist, further confirming that the these are the two most influential genres in music.
 \begin{table}[H]
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -217,6 +253,7 @@ As observed in the Ego Graph seen in Figure xxx, nearly all existing samples of 
 \end{tabular}%
 }
 \caption{Top Artist Centralities (1980's)}
+\label{table:table2}
 \end{table}
 \begin{table}[H]
 \resizebox{\textwidth}{!}{%
@@ -231,6 +268,7 @@ As observed in the Ego Graph seen in Figure xxx, nearly all existing samples of 
 \end{tabular}%
 }
 \caption{Top Artist Centralities (1990's)}
+\label{table:table3}
 \end{table}
 \begin{table}[H]
 \resizebox{\textwidth}{!}{%
@@ -245,7 +283,13 @@ As observed in the Ego Graph seen in Figure xxx, nearly all existing samples of 
 \end{tabular}%
 }
 \caption{Top Artist Centralities (2000's)}
+\label{table:table4}
 \end{table}
+Note that 19 of the 20 artists in the betweenness centrality ranking tables are Hip-Hop/R\&B artists except for James Brown, a Soul/Funk/Disco artist. This reflects the earlier statement that states Hip-Hop/R\&B artists in general are sampled by a diverse set of artists from different genres and sample in higher volumes leading to a higher betweenness centrality.
+
+Also notice that James Brown's domination of the centrality rankings in each time period weakens in the 2000's (seen in Table 4) as he is relegated to positions below rank 1. Though he still appears in the top 5 of every centrality measure (besides betweenness centrality), it appears that his influence lessens in the modern sampling environment. The music sampling community in the 2000's appears to be centralized greatly around more Hip-Hop/R\&B artists such as The Notorious B.I.G. But, this should come as no surprise as one can observe Figure 4 which depicts the weakening hold of Soul/Funk/Disco samples in the 2000's as it is replaced by Hip-Hop/R\&B.
+
+Despite this lowered ranking for James Brown in the 2000's, his appearance in nearly every top 5 temporal centrality ranking over the time periods indicates his strong influence. The only other artists that appear in each of these time periods as well as the overall centrality ranking are Public Enemy and Run-DMC. This indicates that these artists have strong sampling influence over many time periods and continue to be sampled as music sampling practices may change.
 \subsection{Average Clustering Coefficients}
 Over all time periods, the average clustering coefficient for the entire graph appears to be extremely small indicating that groups of samplers tend to be small and are rarely tight-knit about an artist or set of artists. Of course with a large number of nodes, one might expect the average clustering coefficient to be quite low.
 \begin{table}[H]
@@ -259,9 +303,9 @@ Overall & 0.003854434 \\ \hline
 2000's & 0.001085667 \\ \hline
 \end{tabular}
 \caption{Average Local Clustering Coefficients Over Time}
-\label{my-label}
+\label{table:table5}
 \end{table}
-Reffering to Table xxx, the change in the clustering coefficient appears to decrease from the 1980's to the 2000's but the absolute change in the clustering coefficient is small for the overall musical sampling community. The low clustering coefficient overall demonstrates the tendency for artists to not cluster together with all other artists in the network. Because of the nature of sampling data and the wide variety of artists a single artist could possibly sample from, a low average clustering coefficient is not unexpected. However, the trend of a lowering average clustering coefficient over time means artists tend to form fewer tightly knit groups that sample primarily from each other, possibly indicating artists sampling from unique artists that are not widely sampled by others.
+Reffering to Table 5, the change in the clustering coefficient appears to decrease from the 1980's to the 2000's but the absolute change in the clustering coefficient is small for the overall musical sampling community. The low clustering coefficient overall demonstrates the tendency for artists to not cluster together with all other artists in the network. Because of the nature of sampling data and the wide variety of artists a single artist could possibly sample from, a low average clustering coefficient is not unexpected. However, the trend of a lowering average clustering coefficient over time means artists tend to form fewer tightly knit groups that sample primarily from each other, possibly indicating artists sampling from unique artists that are not widely sampled by others.
 \subsection{Louvain Communities}
 \begin{table}[H]
 \resizebox{\textwidth}{!}{%
@@ -277,16 +321,35 @@ Reffering to Table xxx, the change in the clustering coefficient appears to decr
 \end{tabular}%
 }
 \caption{Top Genre Makeup in n'th Largest Louvain Communities}
+\label{table:table6}
 \end{table}
-The proportional makeup of each of the largest Louvain communities came to an unsurprising conclusion given our observations with intra-genre sampling: Each of the partitioned communities were dominated by a single genre.
+The proportional makeup of each of the largest Louvain communities came to an unsurprising conclusion given our observations with intra-genre sampling: Each of the partitioned communities were dominated by a single genre. For four of the five largest Louvain communities, Hip-Hop/R\&B was the genre making up the majority of the community as observed in Table 6. Electronic/Dance came 2nd to Hip-Hop/R\&B in each of these 4 communities and was the most prevalent genre in the 5th largest Louvain community.
+
+This single-genre dominance is the result of a genre that has a high sampling volume in its music. Based on our results from investigating intra-genre sampling, this same genre with high sampling volume frequently samples from artists within its own genre which leads to an insular Louvain community.
 \begin{figure}[H]
 \includegraphics{LouvainCommunities/louvain1st}
 \caption{Genre Makeup of Largest Louvain Community}
+\label{fig:fig13}
 \centering
 \end{figure}
-As shown in Figure xxx, 55.56\% of artists in the largest Louvain Community are Hip-Hop/R\&B artists, indicating a high level of intra-level sampling and an insular sampling pattern. 
+As shown in Figure 13, 55.56\% of artists in the largest Louvain Community are Hip-Hop/R\&B artists, indicating a high level of intra-level sampling and an insular sampling pattern. The most prevalent genres in this community are a combination of the top sampling genres and the most sampled genres over all time periods. Genres that are found most often in the Louvain communities are those that have a greater presence in the sampling community either by being sampled by many artists or by sampling many artists themselves.
 \section{Conclusion and Future Work}
 \subsection{Conclusion}
+Through network analysis of the sampling network, we first verified the historical musical sampling claims perpetuated in modern media and found them to be quantitatively verified. Hip-Hop/R\&B does sample music dramatically more often than other genres with Electronic/Dance following it. Though we couldn't form a causative relationship between the sampling laws that arose from "Grand Upright Music Ltd. v. Warner Bros. Records Inc." and the decrease in sampling volume in 1991, there was a noticeable correlation in the period after 1991 with a decreased sampling volume.
+
+We then analyzed the dataset for the most influential genres which are the genres sampled the most often by artists. Soul/Funk/Disco was the most influential genre overall but Hip-Hop/R\&B has recently challenged this. After performing a temporal analysis, it appears that Hip-Hop/R\&B has consistently been sampled by artists 25-30\% of the time while Soul/Funk/Disco has seen a decrease in the proportion of sampled genres since the 1980's.
+
+Intra-genre influences were found to be strong and artists noticeably sampled from other artists within their genre just as much as they sampled from the most influential genres (if not more). Some genres displayed higher proportions of intra-genre sampling but the greatest takeaway was that all genres do show a strong tendency to sample from within their genre.
+
+James Brown was and continues to be one of the most influential artists throughout all eras of music as indicated by numerous types of centrality measurements. He is without a doubt the most influential artist but other artists such as Public Enemy and Run-DMC also display just as strong of influence overall and throughout all time periods of music. Centrality measurements also reinforced the strength of Hip-Hop/R\&B and Soul/Funk/Disco as the most influential genres in music sampling.
+
+The average clustering coefficient of the entire network was found to be very low throughout all time periods as expected due to the nature of music sampling. After all, an artist is unlikely to sample from many pieces of the music in the 30,000 point dataset. However, a decrease in the average clustering coefficient over time periods since the 1980's may indicate fewer tightly knit groups of artists that sample primarily from each other.
+
+Louvain communities also helped reinforce the notion of strong intra-genre sampling and the dominance of Hip-Hop/R\&B and Electronic/Dance as the highest volume samplers across all genres of music. By being highly sampling genres found in these communities, their majority proportion in each of the largest Louvain communities occurred as a result of strong intra-genre sampling. The more Hip-Hop/R\&B or Electronic/Dance samplers are in a community, the more they sample from their own genre resulting in a compounding effect.
+
+The greatest limitation in the analysis of the sampling network was the lack of granularity in the Audio Element property of the WhoSampled dataset. Due to the labelling scheme in which the sampling of multiple audio elements leads to a sample being categorized as "Multiple Elements" rather than listing each of the audio elements, we were unable to notice any patterns that arose from certain genres or time periods. The only conclusion that could be drawn was that artists tend to sample Vocals if they do not sample Multiple Elements.
+
+Another limitation stemming from the dataset was the lack of sampling data for music released in the 2010's. Much of the sample data in the dataset was concentrated in the 1980's-2000's. Though these eras are indicative of the peak in sampling popularity as a musical device, it is unclear if the data for the most recent decade is lacking due to lack of valid data or actual lack of sampling in the music community. As a result, we did not perform temporal analysis on this time period. Future research could be performed at a later date to observe if the data for this time period is entered into WhoSampled.
 \subsection{Future Work}
 Future studies of musical sampling influence networks can look towards the patterns established by this paper to create an application capable of making predictions about the types of samples likely to be found in a song containing the specific defining characteristics we researched in this project. This predictive analysis could potentially aid developers such as WhoSampled with their music sampling identification software by acting as a false positive check.
 
