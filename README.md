@@ -1,5 +1,7 @@
 # Measuring Musical Sampling Impact Through Network Analysis
 
+![Summary poster of findings](https://github.com/justintranjt/music-sampling-networks/blob/master/Tran_final_paper/poster.jpg)
+
 ## What is musical sampling and why is it interesting?
 Musical sampling influence has only recently been studied through network structures through
 the basic analysis of artist-artist sampling relationships. In this piece of research, we integrate the use of
@@ -21,6 +23,7 @@ More specific influencers from different time periods were also found. We conclu
 future research that can be applied to this network analysis of musical sampling.
 
 ## Where can I find the most pivotal details?
+
 The full paper can be found [here](https://justintranjt.me/research/music_sampling_networks.pdf).
 
 The slide deck for a quick summary can be found [here](https://justintranjt.me/research/presentation.pdf).
