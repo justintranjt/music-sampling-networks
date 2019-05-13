@@ -1,27 +1,14 @@
 # Measuring Musical Sampling Impact Through Network Analysis
 
-Motivation and Goal: Music sampling is the act of taking a portion of another piece and reusing it as an element in a new recording. Musical sampling dates as far back as the 1890’s which suggest that sampling may be a product of stylistic practices rather than being a modern trend. While certain genres of music are notable for utilizing sampling heavily during certain eras (such as early 90’s hip-hop), the use of sampling has spread far beyond hip-hop and is being employed by a variety of music producers across a variety of genres. Sampling informs listeners of the artist’s level on other musicians within their expected sphere of influence (within a genre) or outside of it.
-
-The primary goal of my project is to explore relationships between artists/genres and determine which utilize sampling the most in comparison to others. In addition, we can observe intra-genre and inter-genre sampling (having a sample be used by an artist from the same genre versus another genre, respectively). By noting the intra-genre relationships, we can identify whether artists tend to sample more from other artists within their genre or if they tend to extend their musical reach to unrelated genres instead. 
-The secondary goal is to apply our information on audio element (sample vocals, bass lines, drum beats, etc.) sampling across genres to different time periods. This time-based model of analyzing sampling can uncover specific sampling practices that arose during certain eras or possibly failed to exist after a certain period.
-
-Problem Background and Related Work: In past works, research has been performed on basic network analysis of sampled music that is grouped into genres at the very least. This is seen in
-a paper by researchers in Stanford University’s Department of Music entitled Musical Influence Network Analysis and Rank of Sample-Based Music (2011). The paper utilized the WhoSampled.com dataset to analyze musical influence and rank artists based on their level of “sampling influence” throughout history then proceeded to rank genres based on their amount of sampling analyzed via clustering and node degree. Overall, network analysis was used to indicate the relative flow of samples between genres. However, no intra-genre analysis was included.
-
-Another paper by Stanford researchers called Influence Networks in Popular Music (2015) attempted to investigate music sampling based on harmonic and timbral features such as dominant chords and qualitative emotional response. The researchers identified the music by specific harmonic features rendered by the piece. The focus of this paper varies from mine as the authors mainly attempted to draw associations between the presence of harmonic features and their ability to make a song more likely to be sampled to form a ranking of top features. Neither of the papers touched on the quantitative popularity of sampling over time much less the specific sampling techniques used over a set number of decades.
-
-
-
-Approach: The key method in which I am investigating musical sampling networks is by analyzing changing sampling patterns over time as well as sampling patterns within a genre via network analysis. At the network level, nodes are represented by artists and have an edge to another node if they sampled a song by another artist. Properties such as genre and release year will be used as additional properties to cluster these nodes. This adds a unique approach giving insight to “who samples what from which songs during which era”. The added element of analyzing the unique sampled audio elements of a song is something that has not been explored in past works. Others have not tackled the subject with the focus on sampled audio elements nor sampling over time, but my approach is adequate for answering these questions as the dataset supports the cataloging of these attributes.
-
-Plan: The largest database for music sampling is WhoSampled.com, a website that uses verified community submissions as well as AI to identify instances of music sampling. The WhoSampled database can be accessed through a randomized dump of over 5,000 songs and will be used for this project. Each of these methods provides datapoints that include the sampler and samplee’s respective song title, artist, genre, release year, and audio component sampled.
-
-To build a network of sampled music with the added attribute of sampled audio elements within genres and between genres, we first need to build a digraph in which nodes represent songs and directed edges imply a sampling from another song. These songs would then be clustered by artists and further clustered by the major genre the song belongs to. Clustering nodes by genre further analyzes sampling within a single genre (something that other related works ignore) rather than simply looking across all genres. In addition, audio elements are identified in the network by specifying them as properties of the directed edges. Different graphs can also be built based on the period in which they were released.
-
-Evaluation: Broadly speaking, we will be able to quantitatively confirm qualitative claims that musical communities tend to make regarding sampling such as “hip-hop no longer uses sampling as much as it did during its birth”. The project will also be evaluated through its ability to identify the influence of various genres in sampling culture over time and through their distinct audio elements sampled.
-
-Specifically, analysis can be performed as follows: Measure the degrees of the nodes in addition to the degrees of the clustered artists and subsequently the genres as a cluster. The clusters lend themselves naturally to measuring closeness and cluster coefficients. In addition, to these measurements of influence, analyzing the nodes with the PageRank algorithm and Betweenness will indicate the level of influence or relatedness that individual nodes have in the entire graph.
-
-Analyzing connectivity of the edges with k-components will also be beneficial to the project as it will identify subgraphs or subcommunities of artists that sample only from each other, indicating a set of artists that are closely tied together.
-
-Running further tests on the years in which sampling was used and noting any specific hotspots for sampled audio elements based on the degree. For example, we may notice a strong trend of hip-hop songs sampling drum beats from 1960’s funk music which can be quantitatively confirmed via the number of edges going from the hip-hop cluster to the funk cluster and filtering by time. 
+Musical sampling influence has only recently been studied through network structures through
+the basic analysis of artist-artist sampling relationships. In this piece of research, we integrate the use of
+additional properties of music sampling (such as genre, time period, and audio element sampled) to
+investigate patterns of influence in the musical community at large. Using the WhoSampled dataset and NetworkX for Python,
+we investigate statistical metrics such as the most-sampled artists songs as well as the trend for
+musical sampling over time. We also take a more nuanced look at "influence" by providing a variety
+of graph centrality measurements for determining the influence of a node (representing an artist) on
+other nodes. This analysis resulted in a greater understanding of musical influence certain artists
+and genres had over other heavily-sampling artists and genres over time. The most influential genre
+was found to be Funk/Soul/Disco while the most influential artist of all time was James Brown.
+More specific influencers from different time periods were also found. We conclude with possible
+future research that can be applied to this network analysis of musical sampling.
